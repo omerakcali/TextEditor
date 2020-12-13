@@ -35,7 +35,7 @@ public class Dictionary {
         }
         
         words= wordList.toArray(new String[wordList.size()]);
-        
+            System.out.println("aa");
      
         
         } catch (FileNotFoundException e) {

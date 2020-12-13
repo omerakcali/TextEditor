@@ -26,6 +26,7 @@ public class JunitTest {
    }
    @Test
    public void cuguba(){
+       dr.readDict();
        assertNotNull("Words array could not created.", dr.words);
    }
 }
