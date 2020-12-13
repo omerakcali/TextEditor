@@ -17,16 +17,15 @@ import static org.junit.Assert.*;
  */
 public class JunitTest {
     
-   public DictionaryReader dr;
+   public Dictionary dr;
    @Before
    public void setUp(){
-   dr= new DictionaryReader();
+      
+       dr =new Dictionary();
     
-   
-   
    }
    @Test
    public void cuguba(){
-       assertNull("cugu", dr);
+       assertNotNull("Words array could not created.", dr.words);
    }
 }
