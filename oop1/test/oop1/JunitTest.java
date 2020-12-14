@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package oop1;
+import java.io.File;
+import java.io.FileNotFoundException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,11 +24,21 @@ public class JunitTest {
    public void setUp(){
       
        dr =new Dictionary();
-    
+       dr.readDict();
    }
    @Test
-   public void cuguba(){
-       dr.readDict();
+   public void DictionaryWordsTest(){
+       
        assertNotNull("Words array could not created.", dr.words);
    }
+   
+   @Test
+   public void DictionarySearchTest(){
+       boolean booltrue = dr.Search("aalii");
+       boolean boolfalse = dr.Search("jewropupwrjweorp");
+       assertFalse(boolfalse);
+       assertTrue(booltrue);
+   }
+   
+   
 }
