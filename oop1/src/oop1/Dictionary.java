@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Dictionary {
 
-    String[] words;
+    public static String[]  words;
 
     public void readDict() {
         try {
@@ -41,7 +41,7 @@ public class Dictionary {
 
     }
     
-    public boolean Search(String word){
+    public static boolean Search(String word){
         int min=0;
         int max=words.length-1;
         int currentindex;
