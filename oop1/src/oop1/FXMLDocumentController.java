@@ -53,7 +53,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button nextSearch;
     
+    public int selectedIndex;
     
+   ArrayList<Integer> indexes;
     
     
     
@@ -74,19 +76,22 @@ public class FXMLDocumentController implements Initializable {
     private void handleSearchButton(ActionEvent event) {
         TextEditor.text= InputText.getText();
        TextEditor.readWords();
-        ArrayList<Integer> indexes = new ArrayList<>();
+       indexes=new ArrayList<Integer>();
         String word = SearchButton.getText();
         for (int i = 0; i < TextEditor.words.length; i++) {
             if(TextEditor.words[i].equals(word)){
                 indexes.add(i);
             }
         }
-        for (int i = 0; i < indexes.size(); i++) {
-            int j = indexes.get(i);
+        if(indexes.size()>0){
+            int j = indexes.get(0);
             int k =TextEditor.wordIndexes[j];
             System.out.println(k);
             InputText.selectRange(k,k+ word.length());
+        }else{
+            InputText.deselect();
         }
+        
     }
     
     @FXML
@@ -149,10 +154,16 @@ public class FXMLDocumentController implements Initializable {
         
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
+        selectedIndex=0;
+        indexes=new ArrayList<Integer>();
     }    
 
     @FXML
     private void handleNextSearch(ActionEvent event) {
+        selectedIndex= (selectedIndex+1)%indexes.size();
+        int j = indexes.get(selectedIndex);
+            int k =TextEditor.wordIndexes[j];
+        InputText.selectRange(k,k+ SearchButton.getText().length());
     }
     
 }
