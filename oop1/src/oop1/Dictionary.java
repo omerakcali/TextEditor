@@ -19,7 +19,7 @@ public class Dictionary {
 
     public static String[]  words;
 
-    public void readDict() {
+    public static void readDict() {
         try {
             File wordFile = new File("words.txt");
             Scanner rd = new Scanner(wordFile);
@@ -43,6 +43,7 @@ public class Dictionary {
     
     public static boolean Search(String word){
         int min=0;
+
         int max=words.length-1;
         int currentindex;
         currentindex = (max+min)/2;

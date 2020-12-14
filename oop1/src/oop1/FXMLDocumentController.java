@@ -49,9 +49,11 @@ public class FXMLDocumentController implements Initializable {
     private void handleSpellCheck(ActionEvent event) {
        
        TextEditor.text= InputText.getText();
+       
        TextEditor.readWords();
-     
-       CorrectText.setText(TextEditor.spellChecker());
+        System.out.println(TextEditor.words.length);
+       String correct =TextEditor.spellChecker();
+       CorrectText.setText(correct);
         
     }
     
@@ -73,7 +75,8 @@ public class FXMLDocumentController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
+        Dictionary.readDict();
     }    
     
 }
