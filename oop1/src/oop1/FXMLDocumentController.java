@@ -50,6 +50,8 @@ public class FXMLDocumentController implements Initializable {
     private AnchorPane AnchorPane;
     @FXML
     private TextArea CorrectText;
+    @FXML
+    private Button nextSearch;
     
     
     
@@ -148,5 +150,9 @@ public class FXMLDocumentController implements Initializable {
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
     }    
+
+    @FXML
+    private void handleNextSearch(ActionEvent event) {
+    }
     
 }
