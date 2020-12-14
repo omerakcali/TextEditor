@@ -15,7 +15,7 @@ public class TextEditor {
 
     public static String text;
     public static String[] words;
-    private static int[] wordIndexes;
+    public static int[] wordIndexes;
 
     public static void readWords() {
         ArrayList<String> list = new ArrayList<String>();

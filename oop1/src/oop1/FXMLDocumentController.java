@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import javafx.event.ActionEvent;
@@ -61,15 +62,29 @@ public class FXMLDocumentController implements Initializable {
        TextEditor.text= InputText.getText();
        
        TextEditor.readWords();
-        System.out.println(TextEditor.words.length);
        String correct =TextEditor.spellChecker();
        CorrectText.setText(correct);
+       
         
     }
     
     @FXML
     private void handleSearchButton(ActionEvent event) {
-        
+        TextEditor.text= InputText.getText();
+       TextEditor.readWords();
+        ArrayList<Integer> indexes = new ArrayList<>();
+        String word = SearchButton.getText();
+        for (int i = 0; i < TextEditor.words.length; i++) {
+            if(TextEditor.words[i].equals(word)){
+                indexes.add(i);
+            }
+        }
+        for (int i = 0; i < indexes.size(); i++) {
+            int j = indexes.get(i);
+            int k =TextEditor.wordIndexes[j];
+            System.out.println(k);
+            InputText.selectRange(k,k+ word.length());
+        }
     }
     
     @FXML
