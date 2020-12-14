@@ -5,9 +5,14 @@
  */
 package oop1;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -45,6 +50,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextArea CorrectText;
     
+    
+    
+    
+    
+    
     @FXML
     private void handleSpellCheck(ActionEvent event) {
        
@@ -64,19 +74,64 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleOpen(ActionEvent event) {
+       Window stage = Open.getScene().getWindow();
+       fileChooser.setTitle("Open a Text File");
+       
+       fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File","*.txt"));
+       
+        try {
+            File file = fileChooser.showOpenDialog(stage);
+            fileChooser.setInitialDirectory(file.getParentFile());
+            Scanner scan = new Scanner(file);                     
+            String newFile = "";
+            while (scan.hasNextLine()) {
+                newFile+=scan.nextLine();
+                
+            }
+            
+            InputText.setText(newFile);
+            
+            
+        } catch (Exception e) {
+        }
        
     }
     
     @FXML
     private void handleSave(ActionEvent event) {
+        Window stage = Open.getScene().getWindow();
         
+        fileChooser.setTitle("Save Edited Text");
+       
+       fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File","*.txt"));
+       
+        try {
+          
+            
+            File file = fileChooser.showSaveDialog(stage);
+            fileChooser.setInitialDirectory(file.getParentFile());
+           
+            FileWriter fw = new FileWriter(file);
+            fw.write(CorrectText.getText());
+           
+            fw.close();
+        } catch (IOException e) {
+            
+           
+        }
+    
     }
+    
+    
+    
+    FileChooser fileChooser = new FileChooser();
     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         Dictionary.readDict();
+        fileChooser.setInitialDirectory(new File("C:\\"));
     }    
     
 }
