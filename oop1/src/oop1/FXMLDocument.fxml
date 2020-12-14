@@ -4,12 +4,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="449.0" prefWidth="676.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="oop1.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="449.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop1.FXMLDocumentController">
    <children>
-      <TextField layoutX="14.0" layoutY="70.0" prefHeight="355.0" prefWidth="646.0" />
-      <Button layoutX="22.0" layoutY="21.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="81.0" layoutY="21.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="167.0" layoutY="21.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="249.0" layoutY="21.0" mnemonicParsing="false" text="Button" />
+      <TextField alignment="TOP_LEFT" layoutX="15.0" layoutY="80.0" prefHeight="355.0" prefWidth="646.0" />
+      <Button layoutX="294.0" layoutY="35.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="89.0" text="Spell Check" />
+      <Button layoutX="590.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Ara" />
+      <Button layoutX="15.0" layoutY="35.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="52.0" text="Aç" />
+      <Button layoutX="75.0" layoutY="35.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" text="Kaydet" />
+      <TextField layoutX="460.0" layoutY="41.0" prefHeight="25.0" prefWidth="115.0" />
    </children>
 </AnchorPane>
