@@ -19,6 +19,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -38,10 +41,7 @@ public class FXMLDocumentController implements Initializable {
     private Button SpellCheck;
    @FXML
     private TextField SearchButton;
-   @FXML
     private Button Open;
-   @FXML
-    private Button Save;
    @FXML
     public TextArea InputText;
     @FXML
@@ -54,6 +54,16 @@ public class FXMLDocumentController implements Initializable {
     private Button nextSearch;
     
     public int selectedIndex;
+    @FXML
+    private MenuItem fileOpen;
+    @FXML
+    private MenuItem saveFile;
+    @FXML
+    private Button fix;
+    @FXML
+    private Label IncorrectWCount;
+    @FXML
+    private Label FixedWCount;
     
     
     
@@ -65,8 +75,25 @@ public class FXMLDocumentController implements Initializable {
        TextEditor.text= InputText.getText();
        
        TextEditor.readWords();
+       
+       
        String correct =TextEditor.spellChecker();
+       
+       if (!correct.equals(TextEditor.text)){
+       
        CorrectText.setText(correct);
+       fix.setDisable(false);
+       
+       
+       }
+       
+       else{
+       
+       CorrectText.setText("");
+       fix.setDisable(true);
+       }
+       
+       
        
         
     }
@@ -92,8 +119,8 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @FXML
-    private void handleOpen(ActionEvent event) {
-       Window stage = Open.getScene().getWindow();
+    private void handleOpen(ActionEvent event)throws NullPointerException{
+       Window stage = Search.getScene().getWindow();
        fileChooser.setTitle("Open a Text File");
        
        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File","*.txt"));
@@ -117,8 +144,8 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @FXML
-    private void handleSave(ActionEvent event) {
-        Window stage = Open.getScene().getWindow();
+    private void handleSave(ActionEvent event)throws NullPointerException{
+        Window stage = Search.getScene().getWindow();
         
         fileChooser.setTitle("Save Edited Text");
        
@@ -134,7 +161,7 @@ public class FXMLDocumentController implements Initializable {
             fw.write(CorrectText.getText());
            
             fw.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             
            
         }
@@ -152,6 +179,7 @@ public class FXMLDocumentController implements Initializable {
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex=0;
+        
     }    
 
     @FXML
@@ -160,6 +188,20 @@ public class FXMLDocumentController implements Initializable {
         
             int k =TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
         InputText.selectRange(k,k+ SearchButton.getText().length());
+        
+        
+        
+    }
+
+    @FXML
+    private void fixInputText(ActionEvent event) {
+        
+        InputText.setText(CorrectText.getText());
+        CorrectText.setText("");
+        TextEditor.text=InputText.getText();
+        TextEditor.readWords();
+        fix.setDisable(true);
+        
     }
     
 }
