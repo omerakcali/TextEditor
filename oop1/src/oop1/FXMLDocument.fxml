@@ -14,7 +14,7 @@
    <children>
       <Button id="SpellCheck" fx:id="SpellCheck" layoutX="214.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleSpellCheck" prefHeight="25.0" prefWidth="124.0" text="Spell Check" />
       <Button id="SearchButton" fx:id="Search" layoutX="167.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="25.0" prefWidth="52.0" text="Search" />
-      <TextField id="searchInput" fx:id="SearchButton" layoutX="52.0" layoutY="2.0" prefHeight="25.0" prefWidth="115.0" promptText="Search a Word" />
+      <TextField id="searchInput" fx:id="SearchButton" layoutX="52.0" layoutY="2.0" onKeyTyped="#whileTypingSearch" prefHeight="25.0" prefWidth="115.0" promptText="Search a Word" />
       <TextArea id="InputText" fx:id="InputText" layoutX="39.0" layoutY="139.0" prefHeight="171.0" prefWidth="598.0" />
       <TextArea fx:id="CorrectText" editable="false" layoutX="40.0" layoutY="341.0" prefHeight="69.0" prefWidth="598.0" />
       <Label layoutX="39.0" layoutY="115.0" prefHeight="17.0" prefWidth="78.0" style="-fx-background-color: #3944BC;" text="Your Text Area" textAlignment="CENTER" textFill="WHITE" />

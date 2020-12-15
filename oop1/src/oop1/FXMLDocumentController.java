@@ -24,6 +24,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
@@ -202,6 +203,12 @@ public class FXMLDocumentController implements Initializable {
         TextEditor.text=InputText.getText();
         TextEditor.readWords();
         fix.setDisable(true);
+        
+    }
+
+    @FXML
+    private void whileTypingSearch(KeyEvent event) {
+        
         
     }
     
