@@ -7,6 +7,7 @@ package oop1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,6 +60,33 @@ public class JunitTest {
         String fixedText= TextEditor.spellChecker();
         String expectedText= "fullback, covers. umbrella: full-text ıyoyıoyıu";
         assertEquals(expectedText, fixedText);
+    }
+    
+    @Test
+    public void TestTextEditorConvertIntegers(){
+        int[] expected = {1,2,3,4,5};
+        ArrayList<Integer> alist = new ArrayList<Integer>();
+        for (int i = 0; i < 5; i++) {
+            alist.add(i+1);
+            
+        }
+        assertArrayEquals(expected, TextEditor.convertIntegers(alist));
+    }
+    
+    @Test
+    public void TestTextEditorChangeString(){
+        String actual = "changeTHISchange";
+        String expected= "changeCHANGEchange";
+        assertEquals(expected, TextEditor.changeString(actual, 6,"CHANGE" , 4));
+    }
+    
+    @Test
+    public void TestTextEditorFindWord(){
+        TextEditor.text="Words words aaaa woRdS aa bb";
+        TextEditor.readWords();
+        int[] expected = {0,1,3};
+        TextEditor.findWord("words");
+        assertArrayEquals(expected,TextEditor.foundWordIndexes );
     }
 
 }

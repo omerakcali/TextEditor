@@ -47,7 +47,7 @@ public class Dictionary {
         int max=words.length-1;
         int currentindex;
         currentindex = (max+min)/2;
-        while(!words[currentindex].equals(word) &&  min+1 != max){
+        while(!words[currentindex].equalsIgnoreCase(word) &&  min+1 != max){
             if(word.compareToIgnoreCase(words[currentindex])>0){
                 min=currentindex;
                 currentindex= (max+min)/2;
@@ -57,7 +57,7 @@ public class Dictionary {
             }
         }
         
-        return words[currentindex].equals(word);
+        return words[currentindex].equalsIgnoreCase(word);
     }
 
 }

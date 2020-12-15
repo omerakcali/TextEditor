@@ -55,7 +55,6 @@ public class FXMLDocumentController implements Initializable {
     
     public int selectedIndex;
     
-   ArrayList<Integer> indexes;
     
     
     
@@ -74,19 +73,17 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleSearchButton(ActionEvent event) {
-        TextEditor.text= InputText.getText();
+       TextEditor.text= InputText.getText();
+        System.out.println(TextEditor.text);
        TextEditor.readWords();
-       indexes=new ArrayList<Integer>();
-        String word = SearchButton.getText();
-        for (int i = 0; i < TextEditor.words.length; i++) {
-            if(TextEditor.words[i].equals(word)){
-                indexes.add(i);
-            }
-        }
-        if(indexes.size()>0){
-            int j = indexes.get(0);
-            int k =TextEditor.wordIndexes[j];
-            System.out.println(k);
+       String word = SearchButton.getText();
+       TextEditor.findWord(word);
+       int [] indexes=TextEditor.foundWordIndexes;
+        
+        
+        if(indexes.length>0){
+            
+            int k =TextEditor.wordIndexes[indexes[0]];
             InputText.selectRange(k,k+ word.length());
         }else{
             InputText.deselect();
@@ -155,14 +152,13 @@ public class FXMLDocumentController implements Initializable {
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex=0;
-        indexes=new ArrayList<Integer>();
     }    
 
     @FXML
     private void handleNextSearch(ActionEvent event) {
-        selectedIndex= (selectedIndex+1)%indexes.size();
-        int j = indexes.get(selectedIndex);
-            int k =TextEditor.wordIndexes[j];
+        TextEditor.foundSelectedWord= (TextEditor.foundSelectedWord+1)%TextEditor.foundWordIndexes.length;
+        
+            int k =TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
         InputText.selectRange(k,k+ SearchButton.getText().length());
     }
     

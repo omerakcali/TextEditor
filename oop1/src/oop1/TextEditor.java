@@ -16,7 +16,9 @@ public class TextEditor {
     public static String text;
     public static String[] words;
     public static int[] wordIndexes;
-
+    public static int[] foundWordIndexes;
+    public static int foundSelectedWord;
+    
     public static void readWords() {
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<Integer> indexList = new ArrayList<>();
@@ -56,18 +58,40 @@ public class TextEditor {
                 spellingErrorCount++;
                 for (int j = 0; j < words[i].length() - 1; j++) {
                     //Single Transposition kombinasyonlarının uygulaması
-                    String temp = words[i].substring(0, j) + words[i].charAt(j + 1) + words[i].charAt(j) + words[i].substring(j + 2);
+                    String transpose = words[i].charAt(j + 1) + "" + words[i].charAt(j);
+                    String temp = changeString(words[i], j, transpose, 2);
+                    //String temp = words[i].substring(0, j) + words[i].charAt(j + 1) + words[i].charAt(j) + words[i].substring(j + 2);
 
                     //Herhangi bir single transposition ile oluşan kelime sözlükte bulunursa düzeltilmiş hali yeni textte yerine eklenir.
                     if (Dictionary.Search(temp)) {
                         fixCount++;
-                        newText = newText.substring(0, wordIndexes[i]) + temp + newText.substring(wordIndexes[i] + words[i].length());
+                        //newText = newText.substring(0, wordIndexes[i]) + temp + newText.substring(wordIndexes[i] + words[i].length());
+                        newText = changeString(newText, wordIndexes[i], temp, words[i].length());
                     }
                 }
             }
         }
-
         return newText;
+    }
+
+    public static void  findWord(String word) {
+        int found=0;
+        foundSelectedWord=0;
+        for (int i = 0; i < words.length; i++) {
+            if(words[i].equalsIgnoreCase(word)) found++;
+        }
+        foundWordIndexes= new int[found];
+        found=0;
+        for (int i = 0; i < words.length; i++) {
+            if(words[i].equalsIgnoreCase(word)){
+                foundWordIndexes[found]=i;
+                found++;
+            }
+        }
+    }
+
+    public static String changeString(String text, int index, String word, int length) {
+        return text.substring(0, index) + word + text.substring(index + length);
     }
 
     public static int[] convertIntegers(ArrayList<Integer> integers) {
@@ -77,7 +101,5 @@ public class TextEditor {
         }
         return ret;
     }
-    
-    
-   
+
 }
