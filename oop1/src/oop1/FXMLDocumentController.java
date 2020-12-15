@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -65,6 +66,16 @@ public class FXMLDocumentController implements Initializable {
     private Label IncorrectWCount;
     @FXML
     private Label FixedWCount;
+    @FXML
+    private AnchorPane ChangePane;
+    @FXML
+    private TextField changeWordInput;
+    @FXML
+    private RadioButton changeSelected;
+    @FXML
+    private RadioButton changeAll;
+    @FXML
+    private Button changeButton;
     
     
     
@@ -111,12 +122,48 @@ public class FXMLDocumentController implements Initializable {
         
         if(indexes.length>0){
             nextSearch.setDisable(false);
+            ChangePane.setVisible(true);
             int k =TextEditor.wordIndexes[indexes[0]];
             InputText.selectRange(k,k+ word.length());
         }else{
             InputText.deselect();
             nextSearch.setDisable(true);
         }
+        
+    }
+     @FXML
+    private void handleNextSearch(ActionEvent event) {
+        TextEditor.foundSelectedWord= (TextEditor.foundSelectedWord+1)%TextEditor.foundWordIndexes.length;
+        
+            int k =TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
+        InputText.selectRange(k,k+ SearchButton.getText().length());
+        
+        
+        
+    }
+    @FXML
+    private void handleChangeButton(ActionEvent event) {
+        int lenght = SearchButton.getText().length();
+        if(changeSelected.isSelected()){
+        
+            String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
+            InputText.setText(change);
+        }
+        
+        
+        else{
+        
+            for (int i = 0 ; i<TextEditor.foundWordIndexes.length;i++){
+            
+            String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
+            InputText.setText(change);
+            
+            }
+        
+        
+        }
+        
+       
         
     }
     
@@ -178,22 +225,14 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex=0;
         nextSearch.setDisable(true);
     }    
 
-    @FXML
-    private void handleNextSearch(ActionEvent event) {
-        TextEditor.foundSelectedWord= (TextEditor.foundSelectedWord+1)%TextEditor.foundWordIndexes.length;
-        
-            int k =TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
-        InputText.selectRange(k,k+ SearchButton.getText().length());
-        
-        
-        
-    }
+   
 
     @FXML
     private void fixInputText(ActionEvent event) {
@@ -215,5 +254,18 @@ public class FXMLDocumentController implements Initializable {
         System.out.println(InputText.selectionProperty().toString());
         InputText.deselect();
     }
+
+    @FXML
+    private void handleSelectedCheck(ActionEvent event) {
+        
+        changeAll.setSelected(false);
+    }
+
+    @FXML
+    private void handleAllCheck(ActionEvent event) {
+        changeSelected.setSelected(false);
+    }
+
+    
     
 }

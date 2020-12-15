@@ -93,7 +93,7 @@ public class TextEditor {
     }
 
     public static String changeString(String text, int index, String word, int length) {
-        return text.substring(0, index) + word + text.substring(index + length);
+        return text.substring(0, index) + word + text.substring(index+ length);
     }
 
     public static int[] convertIntegers(ArrayList<Integer> integers) {

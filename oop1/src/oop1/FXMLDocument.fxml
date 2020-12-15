@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="Pane" fx:id="AnchorPane" prefHeight="490.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop1.FXMLDocumentController">
+<AnchorPane id="Pane" fx:id="AnchorPane" maxHeight="490.0" maxWidth="676.0" minHeight="490.0" minWidth="676.0" prefHeight="490.0" prefWidth="676.0" style="-fx-background-color: #7FE9FF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop1.FXMLDocumentController">
    <children>
-      <Button id="SpellCheck" fx:id="SpellCheck" layoutX="214.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleSpellCheck" prefHeight="25.0" prefWidth="124.0" text="Spell Check" />
-      <Button id="SearchButton" fx:id="Search" layoutX="167.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="25.0" prefWidth="52.0" text="Search" />
-      <TextField id="searchInput" fx:id="SearchButton" layoutX="52.0" layoutY="2.0" onKeyTyped="#whileTypingSearch" prefHeight="25.0" prefWidth="115.0" promptText="Search a Word" />
+      <Button id="SpellCheck" fx:id="SpellCheck" layoutX="261.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleSpellCheck" prefHeight="25.0" prefWidth="124.0" text="Spell Check" />
+      <Button id="SearchButton" fx:id="Search" layoutX="167.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="25.0" prefWidth="52.0" text="Search" AnchorPane.topAnchor="0.0" />
+      <TextField id="searchInput" fx:id="SearchButton" layoutX="52.0" layoutY="2.0" onKeyTyped="#whileTypingSearch" prefHeight="25.0" prefWidth="115.0" promptText="Search a Word" AnchorPane.topAnchor="0.0" />
       <TextArea id="InputText" fx:id="InputText" layoutX="39.0" layoutY="139.0" prefHeight="171.0" prefWidth="598.0" />
       <TextArea fx:id="CorrectText" editable="false" layoutX="40.0" layoutY="341.0" prefHeight="69.0" prefWidth="598.0" />
-      <Label layoutX="39.0" layoutY="115.0" prefHeight="17.0" prefWidth="78.0" style="-fx-background-color: #3944BC;" text="Your Text Area" textAlignment="CENTER" textFill="WHITE" />
-      <Label layoutX="40.0" layoutY="317.0" prefHeight="17.0" prefWidth="108.0" style="-fx-background-color: #3944BC;" text="Checked Text Area" textAlignment="CENTER" textFill="WHITE" />
-      <Button fx:id="nextSearch" layoutX="167.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleNextSearch" prefHeight="25.0" prefWidth="31.0" text="-&gt;" />
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="52.0">
+      <Label layoutX="39.0" layoutY="115.0" prefHeight="17.0" prefWidth="88.0" style="-fx-background-color: #081DA5;" text="Your Text Area" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="Calibri Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="40.0" layoutY="317.0" prefHeight="17.0" prefWidth="98.0" style="-fx-background-color: #081DA5;" text="Checked Text Area" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="Calibri Bold" size="12.0" />
+         </font></Label>
+      <Button fx:id="nextSearch" layoutX="167.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleNextSearch" prefHeight="25.0" prefWidth="31.0" text="-&gt;" visible="false" />
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="52.0" AnchorPane.topAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -29,8 +37,11 @@
             </items>
           </Menu>
         </menus>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </MenuBar>
-      <Button fx:id="fix" disable="true" layoutX="339.0" layoutY="313.0" mnemonicParsing="false" onAction="#fixInputText" text="Fix" />
+      <Button fx:id="fix" disable="true" layoutX="386.0" layoutY="313.0" mnemonicParsing="false" onAction="#fixInputText" text="Fix" />
       <Label fx:id="IncorrectWCount" layoutX="127.0" layoutY="421.0" opacity="0.0" prefHeight="20.0" prefWidth="220.0" text="Incorrect Word Count:" textFill="RED">
          <font>
             <Font name="System Bold" size="14.0" />
@@ -41,5 +52,13 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
+      <AnchorPane fx:id="ChangePane" layoutX="276.0" layoutY="2.0" style="-fx-background-color: 0;" visible="false">
+         <children>
+            <TextField fx:id="changeWordInput" prefHeight="25.0" prefWidth="115.0" promptText="Change Word" />
+            <RadioButton fx:id="changeSelected" layoutY="29.0" mnemonicParsing="false" onAction="#handleSelectedCheck" selected="true" text="Selected" />
+            <RadioButton fx:id="changeAll" layoutX="79.0" layoutY="29.0" mnemonicParsing="false" onAction="#handleAllCheck" text="All" />
+            <Button fx:id="changeButton" layoutX="115.0" mnemonicParsing="false" onAction="#handleChangeButton" text="Change" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
