@@ -18,7 +18,7 @@ public class TextEditor {
     public static int[] wordIndexes;
     public static int[] foundWordIndexes;
     public static int foundSelectedWord;
-    
+
     public static void readWords() {
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<Integer> indexList = new ArrayList<>();
@@ -74,17 +74,19 @@ public class TextEditor {
         return newText;
     }
 
-    public static void  findWord(String word) {
-        int found=0;
-        foundSelectedWord=0;
+    public static void findWord(String word) {
+        int found = 0;
+        foundSelectedWord = 0;
         for (int i = 0; i < words.length; i++) {
-            if(words[i].equalsIgnoreCase(word)) found++;
+            if (words[i].equalsIgnoreCase(word)) {
+                found++;
+            }
         }
-        foundWordIndexes= new int[found];
-        found=0;
+        foundWordIndexes = new int[found];
+        found = 0;
         for (int i = 0; i < words.length; i++) {
-            if(words[i].equalsIgnoreCase(word)){
-                foundWordIndexes[found]=i;
+            if (words[i].equalsIgnoreCase(word)) {
+                foundWordIndexes[found] = i;
                 found++;
             }
         }

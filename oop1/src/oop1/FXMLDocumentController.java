@@ -208,8 +208,12 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void whileTypingSearch(KeyEvent event) {
+        TextEditor.foundSelectedWord=0;
+        TextEditor.foundWordIndexes= new int[0];
+        nextSearch.setDisable(true);
         
-        
+        System.out.println(InputText.selectionProperty().toString());
+        InputText.deselect();
     }
     
 }

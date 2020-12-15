@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Dictionary {
 
-    public static String[]  words;
+    public static String[] words;
 
     public static void readDict() {
         try {
@@ -40,23 +40,23 @@ public class Dictionary {
         }
 
     }
-    
-    public static boolean Search(String word){
-        int min=0;
 
-        int max=words.length-1;
+    public static boolean Search(String word) {
+        int min = 0;
+
+        int max = words.length - 1;
         int currentindex;
-        currentindex = (max+min)/2;
-        while(!words[currentindex].equalsIgnoreCase(word) &&  min+1 != max){
-            if(word.compareToIgnoreCase(words[currentindex])>0){
-                min=currentindex;
-                currentindex= (max+min)/2;
-            }else {
-                max=currentindex;
-                currentindex= (max+min)/2;
+        currentindex = (max + min) / 2;
+        while (!words[currentindex].equalsIgnoreCase(word) && min + 1 != max) {
+            if (word.compareToIgnoreCase(words[currentindex]) > 0) {
+                min = currentindex;
+                currentindex = (max + min) / 2;
+            } else {
+                max = currentindex;
+                currentindex = (max + min) / 2;
             }
         }
-        
+
         return words[currentindex].equalsIgnoreCase(word);
     }
 
