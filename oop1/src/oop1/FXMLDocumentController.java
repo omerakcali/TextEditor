@@ -109,11 +109,12 @@ public class FXMLDocumentController implements Initializable {
         
         
         if(indexes.length>0){
-            
+            nextSearch.setDisable(false);
             int k =TextEditor.wordIndexes[indexes[0]];
             InputText.selectRange(k,k+ word.length());
         }else{
             InputText.deselect();
+            nextSearch.setDisable(true);
         }
         
     }
@@ -179,7 +180,7 @@ public class FXMLDocumentController implements Initializable {
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex=0;
-        
+        nextSearch.setDisable(true);
     }    
 
     @FXML
