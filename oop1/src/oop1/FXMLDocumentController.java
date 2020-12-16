@@ -112,7 +112,9 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleSearchButton(ActionEvent event) {
-       TextEditor.text= InputText.getText();
+       
+        nextSearch.setVisible(true);
+        TextEditor.text= InputText.getText();
         System.out.println(TextEditor.text);
        TextEditor.readWords();
        String word = SearchButton.getText();
@@ -148,13 +150,16 @@ public class FXMLDocumentController implements Initializable {
         
             String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
             InputText.setText(change);
+            TextEditor.text=InputText.getText();
+            TextEditor.readWords();
         }
         
         
         else{
         
             for (int i = 0 ; i<TextEditor.foundWordIndexes.length;i++){
-            
+            TextEditor.text=InputText.getText();
+            TextEditor.readWords();
             String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
             InputText.setText(change);
             
@@ -162,6 +167,8 @@ public class FXMLDocumentController implements Initializable {
         
         
         }
+        
+        ChangePane.setVisible(false);
         
        
         
