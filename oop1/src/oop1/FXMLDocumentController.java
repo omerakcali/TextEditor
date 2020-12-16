@@ -121,9 +121,13 @@ public class FXMLDocumentController implements Initializable {
        TextEditor.findWord(word);
        int [] indexes=TextEditor.foundWordIndexes;
         
+        if(indexes.length>1){
         
+        nextSearch.setVisible(true);
+        
+        }
         if(indexes.length>0){
-            nextSearch.setVisible(true);
+            
             nextSearch.setDisable(false);
             ChangePane.setVisible(true);
             int k =TextEditor.wordIndexes[indexes[0]];
