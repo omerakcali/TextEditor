@@ -113,7 +113,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleSearchButton(ActionEvent event) {
        
-        nextSearch.setVisible(true);
+        
         TextEditor.text= InputText.getText();
         System.out.println(TextEditor.text);
        TextEditor.readWords();
@@ -123,6 +123,7 @@ public class FXMLDocumentController implements Initializable {
         
         
         if(indexes.length>0){
+            nextSearch.setVisible(true);
             nextSearch.setDisable(false);
             ChangePane.setVisible(true);
             int k =TextEditor.wordIndexes[indexes[0]];
