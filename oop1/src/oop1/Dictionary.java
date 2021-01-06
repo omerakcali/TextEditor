@@ -19,6 +19,7 @@ public class Dictionary {
 
     public static String[] words;
 
+    //words.txt dosyasındaki kelimeleri okuyup words array'ine atan metod.
     public static void readDict() {
         try {
             File wordFile = new File("words.txt");
@@ -41,6 +42,8 @@ public class Dictionary {
 
     }
 
+    //Parametre olarak verilen kelimeyi words arrayinde binary search ile arayan
+    // boolean return eden metod.
     public static boolean Search(String word) {
         int min = 0;
 

@@ -32,6 +32,7 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 /**
  * FXML Controller class
  *
@@ -39,12 +40,12 @@ import javafx.stage.Window;
  */
 public class FXMLDocumentController implements Initializable {
 
-   @FXML
+    @FXML
     private Button SpellCheck;
-   @FXML
+    @FXML
     private TextField SearchButton;
     private Button Open;
-   @FXML
+    @FXML
     public TextArea InputText;
     @FXML
     private Button Search;
@@ -54,7 +55,7 @@ public class FXMLDocumentController implements Initializable {
     private TextArea CorrectText;
     @FXML
     private Button nextSearch;
-    
+
     public int selectedIndex;
     @FXML
     private MenuItem fileOpen;
@@ -76,200 +77,187 @@ public class FXMLDocumentController implements Initializable {
     private RadioButton changeAll;
     @FXML
     private Button changeButton;
-    
-    
-    
-    
-    
+
+    /*
+    SpellCheck butonuna tıklandığında editöre yazılı olan texti spellchecker
+    metoduna sokar ve değiştirilen kelime varsa aşağıdaki metin kutusunda
+    düzeltilmiş metin yazdırılır
+    */
     @FXML
     private void handleSpellCheck(ActionEvent event) {
-       
-       TextEditor.text= InputText.getText();
-       
-       TextEditor.readWords();
-       
-       
-       String correct =TextEditor.spellChecker();
-       
-       if (!correct.equals(TextEditor.text)){
-       
-       CorrectText.setText(correct);
-       fix.setDisable(false);
-       
-       
-       }
-       
-       else{
-       
-       CorrectText.setText("");
-       fix.setDisable(true);
-       }
-       
-       
-       
-        
+        TextEditor.text = InputText.getText();
+        TextEditor.readWords();
+        String correct = TextEditor.spellChecker();
+        if (!correct.equals(TextEditor.text)) {
+            CorrectText.setText(correct);
+            fix.setDisable(false);
+
+        } else {
+
+            CorrectText.setText("");
+            fix.setDisable(true);
+        }
+
     }
-    
+
+    /*
+    Girilen kelimeyi Editördeki metnin içinde aratır ve ilk bulunan sonucu
+    işaretler. Bulunan diğer sonuçları seçmek için kullanılacak butonu da
+    aktif eder.
+    */
     @FXML
     private void handleSearchButton(ActionEvent event) {
-       
-        
-        TextEditor.text= InputText.getText();
-        System.out.println(TextEditor.text);
-       TextEditor.readWords();
-       String word = SearchButton.getText();
-       TextEditor.findWord(word);
-       int [] indexes=TextEditor.foundWordIndexes;
-        
-        if(indexes.length>1){
-        
-        nextSearch.setVisible(true);
-        
+
+        TextEditor.text = InputText.getText();
+        TextEditor.readWords();
+        String word = SearchButton.getText();
+        TextEditor.findWord(word);
+        int[] indexes = TextEditor.foundWordIndexes;
+
+        if (indexes.length > 1) {
+
+            nextSearch.setVisible(true);
+
         }
-        if(indexes.length>0){
-            
+        if (indexes.length > 0) {
+
             nextSearch.setDisable(false);
             ChangePane.setVisible(true);
-            int k =TextEditor.wordIndexes[indexes[0]];
-            InputText.selectRange(k,k+ word.length());
-        }else{
+            int k = TextEditor.wordIndexes[indexes[0]];
+            InputText.selectRange(k, k + word.length());
+        } else {
             InputText.deselect();
             nextSearch.setDisable(true);
         }
-        
+
     }
-     @FXML
+
+    /*
+    Bulunan kelimelerden bir sonrakinin işaretlenmesine yarayan buton.
+    Son kelimeden sonra başa döner.
+    */
+    @FXML
     private void handleNextSearch(ActionEvent event) {
-        TextEditor.foundSelectedWord= (TextEditor.foundSelectedWord+1)%TextEditor.foundWordIndexes.length;
-        
-            int k =TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
-        InputText.selectRange(k,k+ SearchButton.getText().length());
-        
-        
-        
+        TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.length;
+
+        int k = TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
+        InputText.selectRange(k, k + SearchButton.getText().length());
+
     }
+
+    /*
+    Aranılan kelimenin verilen kelimeyle değiştirilmesi metodu.
+    Kullanıcı sadece seçili olan mı yoksa bütün bulunan kelimelerin mi
+    değiştirileceğini seçer.
+    Bu seçime göre program bulunan keliemelerin indexlerini kullanarak
+    seçili kelimeleri istenen kelimeyle değiştirir.
+    */
     @FXML
     private void handleChangeButton(ActionEvent event) {
         int lenght = SearchButton.getText().length();
-        if(changeSelected.isSelected()){
-        
-            String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
+        if (changeSelected.isSelected()) {
+
+            String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
             InputText.setText(change);
-            TextEditor.text=InputText.getText();
+            TextEditor.text = InputText.getText();
             TextEditor.readWords();
-        }
-        
-        
-        else{
-        
-            for (int i = 0 ; i<TextEditor.foundWordIndexes.length;i++){
-            TextEditor.text=InputText.getText();
-            TextEditor.readWords();
-            String change =TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
-            InputText.setText(change);
-            
+        } else {
+
+            for (int i = 0; i < TextEditor.foundWordIndexes.length; i++) {
+                TextEditor.text = InputText.getText();
+                TextEditor.readWords();
+                String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
+                InputText.setText(change);
+
             }
-        
-        
+
         }
-        
+
         ChangePane.setVisible(false);
-        
-       
-        
+
     }
-    
+
     @FXML
-    private void handleOpen(ActionEvent event)throws NullPointerException{
-       Window stage = Search.getScene().getWindow();
-       fileChooser.setTitle("Open a Text File");
-       
-       fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File","*.txt"));
-       
+    private void handleOpen(ActionEvent event) throws NullPointerException {
+        Window stage = Search.getScene().getWindow();
+        fileChooser.setTitle("Open a Text File");
+
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
+
         try {
             File file = fileChooser.showOpenDialog(stage);
             fileChooser.setInitialDirectory(file.getParentFile());
-            Scanner scan = new Scanner(file);                     
+            Scanner scan = new Scanner(file);
             String newFile = "";
             while (scan.hasNextLine()) {
-                newFile+=scan.nextLine();
-                
+                newFile += scan.nextLine();
+
             }
-            
+
             InputText.setText(newFile);
-            
-            
+
         } catch (Exception e) {
         }
-       
+
     }
-    
+
     @FXML
-    private void handleSave(ActionEvent event)throws NullPointerException{
+    private void handleSave(ActionEvent event) throws NullPointerException {
         Window stage = Search.getScene().getWindow();
-        
+
         fileChooser.setTitle("Save Edited Text");
-       
-       fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File","*.txt"));
-       
+
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text File", "*.txt"));
+
         try {
-          
-            
+
             File file = fileChooser.showSaveDialog(stage);
             fileChooser.setInitialDirectory(file.getParentFile());
-           
+
             FileWriter fw = new FileWriter(file);
             fw.write(CorrectText.getText());
-           
+
             fw.close();
         } catch (Exception e) {
-            
-           
+
         }
-    
+
     }
-    
-    
-    
+
     FileChooser fileChooser = new FileChooser();
-    
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
+
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
-        selectedIndex=0;
+        selectedIndex = 0;
         nextSearch.setDisable(true);
-    }    
-
-   
+    }
 
     @FXML
     private void fixInputText(ActionEvent event) {
-        
+
         InputText.setText(CorrectText.getText());
         CorrectText.setText("");
-        TextEditor.text=InputText.getText();
+        TextEditor.text = InputText.getText();
         TextEditor.readWords();
         fix.setDisable(true);
-        
+
     }
 
     @FXML
     private void whileTypingSearch(KeyEvent event) {
-        TextEditor.foundSelectedWord=0;
-        TextEditor.foundWordIndexes= new int[0];
+        TextEditor.foundSelectedWord = 0;
+        TextEditor.foundWordIndexes = new int[0];
         nextSearch.setDisable(true);
-        
-        System.out.println(InputText.selectionProperty().toString());
+
         InputText.deselect();
     }
 
     @FXML
     private void handleSelectedCheck(ActionEvent event) {
-        
+
         changeAll.setSelected(false);
     }
 
@@ -278,6 +266,4 @@ public class FXMLDocumentController implements Initializable {
         changeSelected.setSelected(false);
     }
 
-    
-    
 }

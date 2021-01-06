@@ -19,19 +19,37 @@ public class TextEditor {
     public static int[] foundWordIndexes;
     public static int foundSelectedWord;
 
+    /* 
+    O sırada Editöre yazılmış olan text'in içerisindeki kelimeleri words 
+    array'ine aktaran method.
+    Bir çok işlem gerçekleştirilmeden önce çağrılıp bellekteki kelimeleri 
+    güncellemek için kullanılır.
+    Bu metod aynı zamanda bütün kelimelerin kaçıncı indexlerde başladığını 
+    tutan wordIndexes array'ini de oluşturur.
+     */
     public static void readWords() {
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<Integer> indexList = new ArrayList<>();
         int i = 0, j = 0;
         String word = "";
+        /*
+        Text içerisinde {',' , ' ' , '.' , ':' , ';' , '!' , '-' , '?'} ile
+        ayrılmış kelimeleri seçip words arrayini oluşturma döngüsü.
+         */
         while (i < text.length()) {
 
-            while (text.charAt(i) == ',' || text.charAt(i) == ' ' || text.charAt(i) == '.' || text.charAt(i) == ':' || text.charAt(i) == ';' || text.charAt(i) == '!' || text.charAt(i) == '-' || text.charAt(i) == '?') {
+            while (text.charAt(i) == ',' || text.charAt(i) == ' '
+                    || text.charAt(i) == '.' || text.charAt(i) == ':'
+                    || text.charAt(i) == ';' || text.charAt(i) == '!'
+                    || text.charAt(i) == '-' || text.charAt(i) == '?') {
                 i++;
             }
             j = i;
             while (j < text.length()) {
-                if (text.charAt(j) == ',' || text.charAt(j) == ' ' || text.charAt(j) == '.' || text.charAt(j) == ':' || text.charAt(j) == ';' || text.charAt(j) == '!' || text.charAt(j) == '-' || text.charAt(j) == '?') {
+                if (text.charAt(j) == ',' || text.charAt(j) == ' '
+                        || text.charAt(j) == '.' || text.charAt(j) == ':'
+                        || text.charAt(j) == ';' || text.charAt(j) == '!'
+                        || text.charAt(j) == '-' || text.charAt(j) == '?') {
 
                     break;
                 }
@@ -47,25 +65,34 @@ public class TextEditor {
         wordIndexes = convertIntegers(indexList);
     }
 
-    //spellchecker ile TextEditor.text değiştirildikten sonra TextEditor.readWords() bir kere çalıştırılmalı.
-    //Bul ve Değiştiri yazarken bu metodun içindeki insertleme kodlarını alıp ayrı bir metod aç ömer abi.59. ve 64. satır
+    /*
+    Kelimeler array'indeki kelimeleri Dictionary Class'ındaki 
+    arama metodunda tek tek aratır, kelime bulunduysa olduğu gibi geçirir
+    bulunmadıysa kelimenin single transposition'lu hallerini de tek tek aratır.
+    Single transposition yapılmış haller sözlükte bulunursa düzeltilmiş kelime 
+    yeni oluşturulacak metine eklenir. Bulunamadıysa sözcük hatalıdır ve olduğu
+    gibi hatalı haliyle yeni metine eklenir.
+    Metinin son hali return edilir
+     */
     public static String spellChecker() {
         int spellingErrorCount = 0;
         int fixCount = 0;
-        String newText = text.toString();
+        String newText = text;
         for (int i = 0; i < words.length; i++) {
             if (!Dictionary.Search(words[i])) {
                 spellingErrorCount++;
                 for (int j = 0; j < words[i].length() - 1; j++) {
                     //Single Transposition kombinasyonlarının uygulaması
-                    String transpose = words[i].charAt(j + 1) + "" + words[i].charAt(j);
+                    String transpose = words[i].charAt(j + 1) + ""
+                            + words[i].charAt(j);
                     String temp = changeString(words[i], j, transpose, 2);
-                    //String temp = words[i].substring(0, j) + words[i].charAt(j + 1) + words[i].charAt(j) + words[i].substring(j + 2);
 
-                    //Herhangi bir single transposition ile oluşan kelime sözlükte bulunursa düzeltilmiş hali yeni textte yerine eklenir.
+
+                    /*Herhangi bir single transposition ile oluşan kelime 
+                    sözlükte bulunursa düzeltilmiş hali yeni textte yerine 
+                    eklenir.*/
                     if (Dictionary.Search(temp)) {
                         fixCount++;
-                        //newText = newText.substring(0, wordIndexes[i]) + temp + newText.substring(wordIndexes[i] + words[i].length());
                         newText = changeString(newText, wordIndexes[i], temp, words[i].length());
                     }
                 }
@@ -74,11 +101,18 @@ public class TextEditor {
         return newText;
     }
 
+    /*
+    Parametre olarak girilen aranacak kelimeyi bellekteki words array'inde 
+    aratır.
+    eğer kelime bulunduysa bulundukları yerlerin indexleri
+    foundWordIndexes array'inde tutulur.
+    Bulunmadıysa bu array 0 elemanlı olacaktır.
+     */
     public static void findWord(String word) {
         int found = 0;
         foundSelectedWord = 0;
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equalsIgnoreCase(word)) {
+        for (String word1 : words) {
+            if (word1.equalsIgnoreCase(word)) {
                 found++;
             }
         }
@@ -86,20 +120,22 @@ public class TextEditor {
         found = 0;
         for (int i = 0; i < words.length; i++) {
             if (words[i].equalsIgnoreCase(word)) {
-                foundWordIndexes[found] = i;
+                foundWordIndexes[found] = i; //Kelimenin indeksini kaydetme
                 found++;
             }
         }
     }
 
+    //verilen stringin içerisindeki bir parçayı başka bir string parçasıyla değiştirme metodu
     public static String changeString(String text, int index, String word, int length) {
-        return text.substring(0, index) + word + text.substring(index+ length);
+        return text.substring(0, index) + word + text.substring(index + length);
     }
 
+    //int tipli arraylisti int tipli array'e çeviren metod.
     public static int[] convertIntegers(ArrayList<Integer> integers) {
         int[] ret = new int[integers.size()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = integers.get(i).intValue();
+            ret[i] = integers.get(i);
         }
         return ret;
     }
