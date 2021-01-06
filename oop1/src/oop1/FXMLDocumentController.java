@@ -146,11 +146,11 @@ public class FXMLDocumentController implements Initializable {
     }
 
     /*
-    Aranılan kelimenin verilen kelimeyle değiştirilmesi metodu.
+    Aranılan kelimenin verilen string ile değiştirilmesi metodu.
     Kullanıcı sadece seçili olan mı yoksa bütün bulunan kelimelerin mi
     değiştirileceğini seçer.
     Bu seçime göre program bulunan keliemelerin indexlerini kullanarak
-    seçili kelimeleri istenen kelimeyle değiştirir.
+    seçili kelimeleri istenen string ile değiştirir.
     */
     @FXML
     private void handleChangeButton(ActionEvent event) {
@@ -177,6 +177,7 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
+    //bilgisayardan bir txt dosyası açılmasını sağlayan metod.
     @FXML
     private void handleOpen(ActionEvent event) throws NullPointerException {
         Window stage = Search.getScene().getWindow();
@@ -201,6 +202,7 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
+    //Editördeki metni bir txt dosyası olarak kaydetmeye yarayan metod.
     @FXML
     private void handleSave(ActionEvent event) throws NullPointerException {
         Window stage = Search.getScene().getWindow();
@@ -235,6 +237,10 @@ public class FXMLDocumentController implements Initializable {
         nextSearch.setDisable(true);
     }
 
+    /*
+    Aşağıdaki metin kutusundaki düzeltilmiş metni yukarıdaki metin kutusuna 
+    taşıyan metod.
+    */
     @FXML
     private void fixInputText(ActionEvent event) {
 
