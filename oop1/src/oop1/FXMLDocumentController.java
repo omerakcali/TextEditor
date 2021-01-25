@@ -282,13 +282,13 @@ public class FXMLDocumentController implements Initializable {
              int end = InputText.getSelection().getEnd();
            if(event.getCode()== KeyCode.BACK_SPACE){
              
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start-1));
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start));
              else commandStack.Push(new Command("DELETE",InputText.getText().substring(end-1,end),start-1));
              
         System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
          }
          else if(event.getCode()== KeyCode.DELETE){
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start-1));
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start));
              else commandStack.Push(new Command("DELETE",InputText.getText().substring(end, end+1),start-1));
              
         System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
@@ -320,6 +320,17 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void handleUndo(ActionEvent event) {
+        Command command = commandStack.Pop();
+        if("TYPE".equals(command.commandType)){
+            String txt = InputText.getText();
+            InputText.setText(txt.substring(0,command.index)+txt.substring(command.index+1));
+        }
+        else
+            if ("DELETE".equals(command.commandType)){
+        InputText.setText(TextEditor.addString(InputText.getText(), command.index, command.command));
+        
+    }
+        
     }
 
 }

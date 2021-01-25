@@ -141,9 +141,16 @@ public class TextEditor {
 
     //verilen stringin içerisindeki bir parçayı başka bir string parçasıyla değiştirme metodu
     public static String changeString(String text, int index, String word, int length) {
+        
         return text.substring(0, index) + word + text.substring(index + length);
     }
 
+    public static String addString(String text, int index, String word ) {
+        System.out.println(text+" "+index+" "+word);
+        if(index !=text.length())
+        return text.substring(0, index) + word + text.substring(index);
+        else return text+word;
+    }
     //int tipli arraylisti int tipli array'e çeviren metod.
     public static int[] convertIntegers(ArrayList<Integer> integers) {
         int[] ret = new int[integers.size()];
