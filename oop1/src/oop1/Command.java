@@ -12,9 +12,11 @@ package oop1;
 public class Command {
     public String commandType;
     public String command;    
-    public Command(String type, String str) {
+    public int index;
+    public Command(String type, String str, int index) {
     this.commandType=type;
     this.command=str;
+    this.index=index;
     }
     
 }

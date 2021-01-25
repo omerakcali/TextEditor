@@ -276,29 +276,28 @@ public class FXMLDocumentController implements Initializable {
     @FXML
      private void onKeyPressed(KeyEvent event) {
          try {
-           if(event.getCode()== KeyCode.BACK_SPACE){
              int start= InputText.getSelection().getStart();
              int end = InputText.getSelection().getEnd();
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText()));
-             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end-1,end)));
+           if(event.getCode()== KeyCode.BACK_SPACE){
              
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start-1));
+             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end-1,end),start-1));
+             
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
          }
          else if(event.getCode()== KeyCode.DELETE){
-             int start= InputText.getSelection().getStart();
-             int end = InputText.getSelection().getEnd();
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText()));
-             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end, end+1)));
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start-1));
+             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end, end+1),start-1));
              
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
          }
          else if( event.getCode() != arrowKeys[0] && 
                  event.getCode() != arrowKeys[1] && 
                  event.getCode() != arrowKeys[2] &&
                  event.getCode() != arrowKeys[3]){
-         commandStack.Push(new Command("TYPE" , event.getText()));
+         commandStack.Push(new Command("TYPE" , event.getText(),start));
          
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
          }
         } catch (java.lang.StringIndexOutOfBoundsException e) {
         }
