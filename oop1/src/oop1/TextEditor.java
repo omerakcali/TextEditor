@@ -6,6 +6,7 @@
 package oop1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -14,9 +15,12 @@ import java.util.ArrayList;
 public class TextEditor {
 
     public static String text;
-    public static String[] words;
-    public static int[] wordIndexes;
-    public static int[] foundWordIndexes;
+    /* words, wordsindexes ve foundwordindexes arrayleri, iterator kullanımı
+    sağlanabilmesi için arrayliste çevrildi.
+    */
+    public static ArrayList<String> words;
+    public static ArrayList<Integer> wordIndexes;
+    public static ArrayList<Integer> foundWordIndexes;
     public static int foundSelectedWord;
 
     /* 
@@ -28,8 +32,8 @@ public class TextEditor {
     tutan wordIndexes array'ini de oluşturur.
      */
     public static void readWords() {
-        ArrayList<String> list = new ArrayList<String>();
-        ArrayList<Integer> indexList = new ArrayList<>();
+        words.clear();
+        wordIndexes.clear();
         int i = 0, j = 0;
         String word = "";
         /*
@@ -56,13 +60,11 @@ public class TextEditor {
                 j++;
             }
             word = text.substring(i, j);
-            indexList.add(i);
-            list.add(word);
+            wordIndexes.add(i);
+            words.add(word);
             i = j + 1;
 
         }
-        words = list.toArray(new String[list.size()]);
-        wordIndexes = convertIntegers(indexList);
     }
 
     /*
@@ -78,14 +80,17 @@ public class TextEditor {
         int spellingErrorCount = 0;
         int fixCount = 0;
         String newText = text;
-        for (int i = 0; i < words.length; i++) {
-            if (!Dictionary.Search(words[i])) {
+        Iterator<String> wordsIt = words.iterator();
+        int index =0;
+        while(wordsIt.hasNext()) {
+            String word = wordsIt.next();
+            if (!Dictionary.Search(word)) {
                 spellingErrorCount++;
-                for (int j = 0; j < words[i].length() - 1; j++) {
+                for (int j = 0; j < word.length() - 1; j++) {
                     //Single Transposition kombinasyonlarının uygulaması
-                    String transpose = words[i].charAt(j + 1) + ""
-                            + words[i].charAt(j);
-                    String temp = changeString(words[i], j, transpose, 2);
+                    String transpose = word.charAt(j + 1) + ""
+                            + word.charAt(j);
+                    String temp = changeString(word, j, transpose, 2);
 
 
                     /*Herhangi bir single transposition ile oluşan kelime 
@@ -93,10 +98,12 @@ public class TextEditor {
                     eklenir.*/
                     if (Dictionary.Search(temp)) {
                         fixCount++;
-                        newText = changeString(newText, wordIndexes[i], temp, words[i].length());
+                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());
+                        
                     }
                 }
             }
+            index++;
         }
         return newText;
     }
@@ -110,20 +117,26 @@ public class TextEditor {
      */
     public static void findWord(String word) {
         int found = 0;
+        foundWordIndexes = new ArrayList<Integer>();
         foundSelectedWord = 0;
-        for (String word1 : words) {
+        Iterator<String> wordsIt = words.iterator();
+        int i =0;
+        while(wordsIt.hasNext()) {
+            String word1= wordsIt.next();
             if (word1.equalsIgnoreCase(word)) {
+                foundWordIndexes.add(i);
                 found++;
             }
+            i++;
         }
-        foundWordIndexes = new int[found];
-        found = 0;
+        
+        /*found = 0;
         for (int i = 0; i < words.length; i++) {
-            if (words[i].equalsIgnoreCase(word)) {
+            if (word.equalsIgnoreCase(word)) {
                 foundWordIndexes[found] = i; //Kelimenin indeksini kaydetme
                 found++;
             }
-        }
+        }*/
     }
 
     //verilen stringin içerisindeki bir parçayı başka bir string parçasıyla değiştirme metodu

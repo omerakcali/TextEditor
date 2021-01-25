@@ -5,6 +5,7 @@
  */
 package oop1;
 
+import com.sun.javafx.scene.layout.region.Margins;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Stack;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,6 +27,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -77,6 +80,8 @@ public class FXMLDocumentController implements Initializable {
     private RadioButton changeAll;
     @FXML
     private Button changeButton;
+    
+    private CommandStack commandStack;
 
     /*
     SpellCheck butonuna tıklandığında editöre yazılı olan texti spellchecker
@@ -97,7 +102,6 @@ public class FXMLDocumentController implements Initializable {
             CorrectText.setText("");
             fix.setDisable(true);
         }
-
     }
 
     /*
@@ -112,18 +116,18 @@ public class FXMLDocumentController implements Initializable {
         TextEditor.readWords();
         String word = SearchButton.getText();
         TextEditor.findWord(word);
-        int[] indexes = TextEditor.foundWordIndexes;
+        ArrayList<Integer> indexes = TextEditor.foundWordIndexes;
 
-        if (indexes.length > 1) {
+        if (indexes.size() > 1) {
 
             nextSearch.setVisible(true);
 
         }
-        if (indexes.length > 0) {
+        if (indexes.size() > 0) {
 
             nextSearch.setDisable(false);
             ChangePane.setVisible(true);
-            int k = TextEditor.wordIndexes[indexes[0]];
+            int k = TextEditor.wordIndexes.get(indexes.get(0));
             InputText.selectRange(k, k + word.length());
         } else {
             InputText.deselect();
@@ -138,9 +142,9 @@ public class FXMLDocumentController implements Initializable {
     */
     @FXML
     private void handleNextSearch(ActionEvent event) {
-        TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.length;
+        TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.size();
 
-        int k = TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
+        int k = TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(TextEditor.foundSelectedWord));
         InputText.selectRange(k, k + SearchButton.getText().length());
 
     }
@@ -157,16 +161,16 @@ public class FXMLDocumentController implements Initializable {
         int lenght = SearchButton.getText().length();
         if (changeSelected.isSelected()) {
 
-            String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
+            String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(TextEditor.foundSelectedWord)), changeWordInput.getText(), lenght);
             InputText.setText(change);
             TextEditor.text = InputText.getText();
             TextEditor.readWords();
         } else {
 
-            for (int i = 0; i < TextEditor.foundWordIndexes.length; i++) {
+            for (int i = 0; i < TextEditor.foundWordIndexes.size(); i++) {
                 TextEditor.text = InputText.getText();
                 TextEditor.readWords();
-                String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
+                String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(i)), changeWordInput.getText(), lenght);
                 InputText.setText(change);
 
             }
@@ -230,11 +234,17 @@ public class FXMLDocumentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
+        
+        
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex = 0;
         nextSearch.setDisable(true);
+        TextEditor.foundWordIndexes= new ArrayList<Integer>();
+        TextEditor.words= new ArrayList<String>();
+        TextEditor.wordIndexes= new ArrayList<Integer>();
+        commandStack= new CommandStack(10);
     }
 
     /*
@@ -255,10 +265,45 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void whileTypingSearch(KeyEvent event) {
         TextEditor.foundSelectedWord = 0;
-        TextEditor.foundWordIndexes = new int[0];
+        TextEditor.foundWordIndexes.clear();
         nextSearch.setDisable(true);
 
         InputText.deselect();
+    }
+    
+    KeyCode[] arrowKeys = { KeyCode.UP,KeyCode.DOWN,KeyCode.RIGHT,KeyCode.LEFT};
+    
+    @FXML
+     private void onKeyPressed(KeyEvent event) {
+         try {
+           if(event.getCode()== KeyCode.BACK_SPACE){
+             int start= InputText.getSelection().getStart();
+             int end = InputText.getSelection().getEnd();
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText()));
+             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end-1,end)));
+             
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+         }
+         else if(event.getCode()== KeyCode.DELETE){
+             int start= InputText.getSelection().getStart();
+             int end = InputText.getSelection().getEnd();
+             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText()));
+             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end, end+1)));
+             
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+         }
+         else if( event.getCode() != arrowKeys[0] && 
+                 event.getCode() != arrowKeys[1] && 
+                 event.getCode() != arrowKeys[2] &&
+                 event.getCode() != arrowKeys[3]){
+         commandStack.Push(new Command("TYPE" , event.getText()));
+         
+        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command); 
+         }
+        } catch (java.lang.StringIndexOutOfBoundsException e) {
+        }
+         
+        
     }
 
     @FXML
