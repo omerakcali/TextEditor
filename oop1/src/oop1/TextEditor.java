@@ -86,22 +86,12 @@ public class TextEditor {
             String word = wordsIt.next();
             if (!Dictionary.Search(word)) {
                 spellingErrorCount++;
-                for (int j = 0; j < word.length() - 1; j++) {
-                    //Single Transposition kombinasyonlarının uygulaması
-                    String transpose = word.charAt(j + 1) + ""
-                            + word.charAt(j);
-                    String temp = changeString(word, j, transpose, 2);
-
-
-                    /*Herhangi bir single transposition ile oluşan kelime 
-                    sözlükte bulunursa düzeltilmiş hali yeni textte yerine 
-                    eklenir.*/
-                    if (Dictionary.Search(temp)) {
+                SingleTransposition st= new SingleTransposition();
+                String temp = st.apply(word);
+                    if (temp !=null) {
                         fixCount++;
-                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());
-                        
+                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());                       
                     }
-                }
             }
             index++;
         }
@@ -152,12 +142,6 @@ public class TextEditor {
         else return text+word;
     }
     //int tipli arraylisti int tipli array'e çeviren metod.
-    public static int[] convertIntegers(ArrayList<Integer> integers) {
-        int[] ret = new int[integers.size()];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = integers.get(i);
-        }
-        return ret;
-    }
+   
 
 }

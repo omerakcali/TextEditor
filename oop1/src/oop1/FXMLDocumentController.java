@@ -275,6 +275,9 @@ public class FXMLDocumentController implements Initializable {
     
     KeyCode[] arrowKeys = { KeyCode.UP,KeyCode.DOWN,KeyCode.RIGHT,KeyCode.LEFT};
     
+    
+    //Text alanına her key basışta yapılan işleme göre command stack'e
+    //command objesi pushlama.
     @FXML
      private void onKeyPressed(KeyEvent event) {
          try {
@@ -318,8 +321,10 @@ public class FXMLDocumentController implements Initializable {
         changeSelected.setSelected(false);
     }
 
+    
     @FXML
     private void handleUndo(ActionEvent event) {
+        try{
         Command command = commandStack.Pop();
         if("TYPE".equals(command.commandType)){
             String txt = InputText.getText();
@@ -328,9 +333,11 @@ public class FXMLDocumentController implements Initializable {
         else
             if ("DELETE".equals(command.commandType)){
         InputText.setText(TextEditor.addString(InputText.getText(), command.index, command.command));
-        
+            
     }
-        
+        } catch(NullPointerException e){
+            System.out.println("nuulpoi");
+        }
     }
 
 }
