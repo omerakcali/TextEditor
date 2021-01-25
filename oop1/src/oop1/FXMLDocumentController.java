@@ -82,6 +82,8 @@ public class FXMLDocumentController implements Initializable {
     private Button changeButton;
     
     private CommandStack commandStack;
+    @FXML
+    private Button undo;
 
     /*
     SpellCheck butonuna tıklandığında editöre yazılı olan texti spellchecker
@@ -314,6 +316,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleAllCheck(ActionEvent event) {
         changeSelected.setSelected(false);
+    }
+
+    @FXML
+    private void handleUndo(ActionEvent event) {
     }
 
 }
