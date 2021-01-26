@@ -12,31 +12,42 @@ import java.util.Stack;
  * @author PC
  */
 public class CommandStack {
+
     public Stack<Command> commandStack;
     int size;
 
     public CommandStack(int size) {
-        this.size=size;
-        commandStack= new Stack<Command>();
+        this.size = size;
+        commandStack = new Stack<Command>();
     }
-    
-    public void Push (Command c){
-        if(commandStack.size()>= size)commandStack.remove(0);
+
+    //Komutları belirlenen büyüklükteki yığıta atar. Yığıt dolduğunda en geçmişteki
+    //komutlardan silmeye başlar.
+    public void Push(Command c) {
+        if (commandStack.size() >= size) {
+            commandStack.remove(0);
+        }
         commandStack.push(c);
-        
+
     }
-    public Command Pop(){
-        if(commandStack.size()>0)
-    return commandStack.pop();
-        else return null;
-    
+
+    //Yığıta son eklenen komut objesini yığıttan çıkarır ve döndürür.
+    public Command Pop() {
+        if (commandStack.size() > 0) {
+            return commandStack.pop();
+        } else {
+            return null;
+        }
+
     }
-    
-    public Command Peek(){
-        if(commandStack.size()>0)
-    return commandStack.peek();
-        else return null;
+
+    //Yığıta son eklenen komut objesini döndürür.
+    public Command Peek() {
+        if (commandStack.size() > 0) {
+            return commandStack.peek();
+        } else {
+            return null;
+        }
     }
-    
-    
+
 }

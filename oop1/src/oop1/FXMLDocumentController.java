@@ -59,7 +59,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button nextSearch;
 
-    public int selectedIndex;
     @FXML
     private MenuItem fileOpen;
     @FXML
@@ -80,16 +79,18 @@ public class FXMLDocumentController implements Initializable {
     private RadioButton changeAll;
     @FXML
     private Button changeButton;
-    
-    private CommandStack commandStack;
     @FXML
     private Button undo;
+
+    FileChooser fileChooser = new FileChooser();
+    private CommandStack commandStack;
+    public int selectedIndex;
 
     /*
     SpellCheck butonuna tıklandığında editöre yazılı olan texti spellchecker
     metoduna sokar ve değiştirilen kelime varsa aşağıdaki metin kutusunda
     düzeltilmiş metin yazdırılır
-    */
+     */
     @FXML
     private void handleSpellCheck(ActionEvent event) {
         TextEditor.text = InputText.getText();
@@ -110,7 +111,7 @@ public class FXMLDocumentController implements Initializable {
     Girilen kelimeyi Editördeki metnin içinde aratır ve ilk bulunan sonucu
     işaretler. Bulunan diğer sonuçları seçmek için kullanılacak butonu da
     aktif eder.
-    */
+     */
     @FXML
     private void handleSearchButton(ActionEvent event) {
 
@@ -141,7 +142,7 @@ public class FXMLDocumentController implements Initializable {
     /*
     Bulunan kelimelerden bir sonrakinin işaretlenmesine yarayan buton.
     Son kelimeden sonra başa döner.
-    */
+     */
     @FXML
     private void handleNextSearch(ActionEvent event) {
         TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.size();
@@ -157,7 +158,7 @@ public class FXMLDocumentController implements Initializable {
     değiştirileceğini seçer.
     Bu seçime göre program bulunan keliemelerin indexlerini kullanarak
     seçili kelimeleri istenen string ile değiştirir.
-    */
+     */
     @FXML
     private void handleChangeButton(ActionEvent event) {
         int lenght = SearchButton.getText().length();
@@ -232,27 +233,24 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
-    FileChooser fileChooser = new FileChooser();
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
-        
+
+        TextEditor.InitializeFunctions();
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex = 0;
         nextSearch.setDisable(true);
-        TextEditor.foundWordIndexes= new ArrayList<Integer>();
-        TextEditor.words= new ArrayList<String>();
-        TextEditor.wordIndexes= new ArrayList<Integer>();
-        commandStack= new CommandStack(10);
+        TextEditor.foundWordIndexes = new ArrayList<Integer>();
+        TextEditor.words = new ArrayList<String>();
+        TextEditor.wordIndexes = new ArrayList<Integer>();
+        commandStack = new CommandStack(10);
     }
 
     /*
     Aşağıdaki metin kutusundaki düzeltilmiş metni yukarıdaki metin kutusuna 
     taşıyan metod.
-    */
+     */
     @FXML
     private void fixInputText(ActionEvent event) {
 
@@ -272,42 +270,59 @@ public class FXMLDocumentController implements Initializable {
 
         InputText.deselect();
     }
-    
-    KeyCode[] arrowKeys = { KeyCode.UP,KeyCode.DOWN,KeyCode.RIGHT,KeyCode.LEFT};
-    
-    
+
+    KeyCode[] ignoreKeys = {KeyCode.UP, KeyCode.DOWN, KeyCode.RIGHT, KeyCode.LEFT, KeyCode.SHIFT, KeyCode.CONTROL, KeyCode.ALT, KeyCode.TAB};
+
     //Text alanına her key basışta yapılan işleme göre command stack'e
     //command objesi pushlama.
     @FXML
-     private void onKeyPressed(KeyEvent event) {
-         try {
-             int start= InputText.getSelection().getStart();
-             int end = InputText.getSelection().getEnd();
-           if(event.getCode()== KeyCode.BACK_SPACE){
-             
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start));
-             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end-1,end),start-1));
-             
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
-         }
-         else if(event.getCode()== KeyCode.DELETE){
-             if(start!= end) commandStack.Push(new Command("DELETE", InputText.getSelectedText(),start));
-             else commandStack.Push(new Command("DELETE",InputText.getText().substring(end, end+1),start-1));
-             
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
-         }
-         else if( event.getCode() != arrowKeys[0] && 
-                 event.getCode() != arrowKeys[1] && 
-                 event.getCode() != arrowKeys[2] &&
-                 event.getCode() != arrowKeys[3]){
-         commandStack.Push(new Command("TYPE" , event.getText(),start));
-         
-        System.out.println("İŞLEM TİPİ: "+commandStack.Peek().commandType+" -- İşlem: "+commandStack.Peek().command+" "+commandStack.Peek().index); 
-         }
+    private void onKeyPressed(KeyEvent event) {
+        try {
+            int start = InputText.getSelection().getStart();
+            int end = InputText.getSelection().getEnd();
+            if (event.getCode() == KeyCode.BACK_SPACE) {//Backspace tuşuna basıldıysa.
+
+                if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
+                    commandStack.Push(new Command("DELETE", InputText.getSelectedText(), start));
+                } else {//1 karakterden fazla bir string seçilip silindiyse
+                    commandStack.Push(new Command("DELETE", InputText.getText().substring(end - 1, end), start - 1));
+                }
+
+                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
+            } else if (event.getCode() == KeyCode.DELETE) {//DELETE tuşuna basıldıysa
+                if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
+                    commandStack.Push(new Command("DELETE", InputText.getSelectedText(), start));
+                } else {//1 karakterden fazla bir string seçilip silindiyse
+                    commandStack.Push(new Command("DELETE", InputText.getText().substring(end, end + 1), start - 1));
+                }
+
+                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
+            } else if (event.getCode() != ignoreKeys[0]
+                    && event.getCode() != ignoreKeys[1]
+                    && event.getCode() != ignoreKeys[2]
+                    && event.getCode() != ignoreKeys[3]
+                    && event.getCode() != ignoreKeys[4]
+                    && event.getCode() != ignoreKeys[5]
+                    && event.getCode() != ignoreKeys[6]
+                    && event.getCode() != ignoreKeys[7]) {
+                /*
+                Backspace , DELETE , TAB , CTRL , ALT ,SHIFT veya
+                ok tuşlarından biri basılmadıysa. Basılan tuşun bir karakter
+                olduğunu varsayarak Bu karakterin bilgilerini içeren bir 
+                Command objesi oluşturulur ve Stack'e eklenir.
+                
+                Burada belirtilen tuşlardan farklı olup bir karakter tuşu olmayan
+                bir tuşa basıldığında program hata verebilir. Bunların yoksayılması
+                özelliği eklenmemiştir. Sadece karakter tuşlarına basılacağı
+                varsayılır.
+                 */
+                commandStack.Push(new Command("TYPE", event.getText(), start));
+
+                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
+            }
         } catch (java.lang.StringIndexOutOfBoundsException e) {
         }
-         
-        
+
     }
 
     @FXML
@@ -321,21 +336,30 @@ public class FXMLDocumentController implements Initializable {
         changeSelected.setSelected(false);
     }
 
-    
     @FXML
     private void handleUndo(ActionEvent event) {
-        try{
-        Command command = commandStack.Pop();
-        if("TYPE".equals(command.commandType)){
-            String txt = InputText.getText();
-            InputText.setText(txt.substring(0,command.index)+txt.substring(command.index+1));
-        }
-        else
-            if ("DELETE".equals(command.commandType)){
-        InputText.setText(TextEditor.addString(InputText.getText(), command.index, command.command));
+        try {
+            /*
+            Geri al tuşuna basıldığında commandStack'ten pop edilen command'in
+            içeriği kontrol edilir ve bu içeriğe göre gerekli işlem yapılır.
             
-    }
-        } catch(NullPointerException e){
+            Örneğin "DELETE" işlemine sahip içeriği "abc" olan ve indexi 3 olan
+            bir komut undo edildiğinde. Program o sırada metin kutusunun 3. 
+            indexine "abc" metnini yazacaktır.
+            
+            "TYPE" işlemine sahip indexi 4 olan komut undo edildiğinde. Program
+            4. indexteki harfi silecektir. Bu command tipinde command'in içeriği
+            önemli değildir. Sadece silinecek harfi gösterir ama işlemde kullanılmaz.
+             */
+            Command command = commandStack.Pop();
+            if ("TYPE".equals(command.commandType)) {
+                String txt = InputText.getText();
+                InputText.setText(txt.substring(0, command.index) + txt.substring(command.index + 1));
+            } else if ("DELETE".equals(command.commandType)) {
+                InputText.setText(TextEditor.addString(InputText.getText(), command.index, command.command));
+
+            }
+        } catch (NullPointerException e) {
             System.out.println("nuulpoi");
         }
     }

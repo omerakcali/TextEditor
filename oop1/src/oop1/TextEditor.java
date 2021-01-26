@@ -14,10 +14,12 @@ import java.util.Iterator;
  */
 public class TextEditor {
 
+    public static ArrayList<SpellErrorFunctions> spellErrorFunctions = new ArrayList<SpellErrorFunctions>();
+
     public static String text;
     /* words, wordsindexes ve foundwordindexes arrayleri, iterator kullanımı
     sağlanabilmesi için arrayliste çevrildi.
-    */
+     */
     public static ArrayList<String> words;
     public static ArrayList<Integer> wordIndexes;
     public static ArrayList<Integer> foundWordIndexes;
@@ -81,17 +83,21 @@ public class TextEditor {
         int fixCount = 0;
         String newText = text;
         Iterator<String> wordsIt = words.iterator();
-        int index =0;
-        while(wordsIt.hasNext()) {
+        int index = 0;
+        while (wordsIt.hasNext()) {
             String word = wordsIt.next();
             if (!Dictionary.Search(word)) {
                 spellingErrorCount++;
-                SingleTransposition st= new SingleTransposition();
-                String temp = st.apply(word);
-                    if (temp !=null) {
+                Iterator<SpellErrorFunctions> funcIt = spellErrorFunctions.iterator();
+                while (funcIt.hasNext()) {
+                    String temp = funcIt.next().apply(word);
+                    if (temp != null) {
                         fixCount++;
-                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());                       
+                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());
+                        break;
                     }
+                }
+
             }
             index++;
         }
@@ -110,16 +116,16 @@ public class TextEditor {
         foundWordIndexes = new ArrayList<Integer>();
         foundSelectedWord = 0;
         Iterator<String> wordsIt = words.iterator();
-        int i =0;
-        while(wordsIt.hasNext()) {
-            String word1= wordsIt.next();
+        int i = 0;
+        while (wordsIt.hasNext()) {
+            String word1 = wordsIt.next();
             if (word1.equalsIgnoreCase(word)) {
                 foundWordIndexes.add(i);
                 found++;
             }
             i++;
         }
-        
+
         /*found = 0;
         for (int i = 0; i < words.length; i++) {
             if (word.equalsIgnoreCase(word)) {
@@ -129,19 +135,26 @@ public class TextEditor {
         }*/
     }
 
+    public static void InitializeFunctions() {
+        ErrorFunctionFactory factory = new ErrorFunctionFactory();
+        spellErrorFunctions.add(factory.createFunction("SingleTransposition"));
+
+    }
+
     //verilen stringin içerisindeki bir parçayı başka bir string parçasıyla değiştirme metodu
     public static String changeString(String text, int index, String word, int length) {
-        
+
         return text.substring(0, index) + word + text.substring(index + length);
     }
 
-    public static String addString(String text, int index, String word ) {
-        System.out.println(text+" "+index+" "+word);
-        if(index !=text.length())
-        return text.substring(0, index) + word + text.substring(index);
-        else return text+word;
+    public static String addString(String text, int index, String word) {
+        System.out.println(text + " " + index + " " + word);
+        if (index != text.length()) {
+            return text.substring(0, index) + word + text.substring(index);
+        } else {
+            return text + word;
+        }
     }
     //int tipli arraylisti int tipli array'e çeviren metod.
-   
 
 }
