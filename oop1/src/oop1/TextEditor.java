@@ -72,10 +72,16 @@ public class TextEditor {
     /*
     Kelimeler array'indeki kelimeleri Dictionary Class'ındaki 
     arama metodunda tek tek aratır, kelime bulunduysa olduğu gibi geçirir
-    bulunmadıysa kelimenin single transposition'lu hallerini de tek tek aratır.
-    Single transposition yapılmış haller sözlükte bulunursa düzeltilmiş kelime 
+    bulunmadıysa kelimeyi tek tek yazım hatası düzeltme algoritmalarının olduğu
+    ArrayListteki fonksiyonlara sokar.
+    
+    Kelime düzeltilebilmiş ise fonksiyondan farklı bir halde çıkar.
+    Düzeltilememiş ise olduğu gibi çıkar. 
+    
+    Kelimenin fonksiyondan çıkmış hali
     yeni oluşturulacak metine eklenir. Bulunamadıysa sözcük hatalıdır ve olduğu
     gibi hatalı haliyle yeni metine eklenir.
+    
     Metinin son hali return edilir
      */
     public static String spellChecker() {
@@ -88,7 +94,7 @@ public class TextEditor {
             String word = wordsIt.next();
             if (!Dictionary.Search(word)) {
                 spellingErrorCount++;
-                Iterator<SpellErrorFunctions> funcIt = spellErrorFunctions.iterator();
+                Iterator<SpellErrorFunctions> funcIt = spellErrorFunctions.iterator(); //iterator design pattern
                 while (funcIt.hasNext()) {
                     String temp = funcIt.next().apply(word);
                     if (temp != null) {
@@ -135,8 +141,9 @@ public class TextEditor {
         }*/
     }
 
+    //Yazım Hatası Düzeltme algoritmalarının bulunduğu ArrayList'in doldurulması
     public static void InitializeFunctions() {
-        ErrorFunctionFactory factory = new ErrorFunctionFactory();
+        ErrorFunctionFactory factory = new ErrorFunctionFactory();//Factory Design Pattern
         spellErrorFunctions.add(factory.createFunction("SingleTransposition"));
 
     }
@@ -147,14 +154,14 @@ public class TextEditor {
         return text.substring(0, index) + word + text.substring(index + length);
     }
 
+    //belirli bir stringde verilen indexe başka bir string insert etme metodu
     public static String addString(String text, int index, String word) {
         System.out.println(text + " " + index + " " + word);
         if (index != text.length()) {
             return text.substring(0, index) + word + text.substring(index);
         } else {
             return text + word;
+            
         }
     }
-    //int tipli arraylisti int tipli array'e çeviren metod.
-
 }

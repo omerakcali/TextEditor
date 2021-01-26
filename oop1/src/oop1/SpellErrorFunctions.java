@@ -10,5 +10,6 @@ package oop1;
  * @author PC
  */
 public interface SpellErrorFunctions {
+
     String apply(String word);
 }

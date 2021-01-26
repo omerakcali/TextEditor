@@ -15,19 +15,18 @@ public class SingleTransposition implements SpellErrorFunctions {
     public String apply(String word) {
 
         for (int j = 0; j < word.length() - 1; j++) {
-                    //Single Transposition kombinasyonlarının uygulaması
-                    String transpose = word.charAt(j + 1) + ""
-                            + word.charAt(j);
-                    String temp = TextEditor.changeString(word, j, transpose, 2);
-                    /*Herhangi bir single transposition ile oluşan kelime 
+            //Single Transposition kombinasyonlarının uygulaması
+            String transpose = word.charAt(j + 1) + ""
+                    + word.charAt(j);
+            String temp = TextEditor.changeString(word, j, transpose, 2);
+            /*Herhangi bir single transposition ile oluşan kelime 
                     sözlükte bulunursa düzeltilmiş hali yeni textte yerine 
                     eklenir.*/
-                    if (Dictionary.Search(temp)) {
-                        return temp;
-                    }
-                }
-    
-    return word;
-}
-}
+            if (Dictionary.Search(temp)) {
+                return temp;
+            }
+        }
 
+        return word;
+    }
+}
