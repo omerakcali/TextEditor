@@ -28,7 +28,11 @@ public class ConcreteCommand implements Command {
 
     @Override
     public void Execute(FXMLDocumentController fxml) {
+        //O anki yazılı metni koyma
         TextEditor.text=fxml.InputText.getText();
+        //Eklenen harfi arkaplandaki stringe yerleştirme.
+        TextEditor.text=TextEditor.addString(TextEditor.text, index,command);
+        //Arkaplandaki classtaki metnin kelimelerinin okunup kaydedilmesi.
         TextEditor.readWords();
     }
 
@@ -40,5 +44,7 @@ public class ConcreteCommand implements Command {
             } else if ("DELETE".equals(commandType)) {
                 fxml.InputText.setText(TextEditor.addString(fxml.InputText.getText(), index,command));
     }
+       TextEditor.text=fxml.InputText.getText();
+        TextEditor.readWords();
     }
 }

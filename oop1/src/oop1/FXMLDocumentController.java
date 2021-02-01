@@ -94,8 +94,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleSpellCheck(ActionEvent event) {
         
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+       // TextEditor.text = InputText.getText();
+       // TextEditor.readWords();
         String correct = TextEditor.spellChecker();
         if (!correct.equals(TextEditor.text)) {
             CorrectText.setText(correct);
@@ -116,8 +116,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleSearchButton(ActionEvent event) {
 
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+      //  TextEditor.text = InputText.getText();
+      //  TextEditor.readWords();
+        System.out.println(TextEditor.text);
         String word = SearchButton.getText();
         TextEditor.findWord(word);
         ArrayList<Integer> indexes = TextEditor.foundWordIndexes;
@@ -167,16 +168,16 @@ public class FXMLDocumentController implements Initializable {
 
             String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(TextEditor.foundSelectedWord)), changeWordInput.getText(), lenght);
             InputText.setText(change);
-            TextEditor.text = InputText.getText();
+                TextEditor.text = InputText.getText();
             TextEditor.readWords();
         } else {
 
             for (int i = 0; i < TextEditor.foundWordIndexes.size(); i++) {
-                TextEditor.text = InputText.getText();
-                TextEditor.readWords();
+               
                 String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(i)), changeWordInput.getText(), lenght);
                 InputText.setText(change);
-
+                TextEditor.text = InputText.getText();
+                TextEditor.readWords();
             }
 
         }
@@ -259,8 +260,8 @@ public class FXMLDocumentController implements Initializable {
 
         InputText.setText(CorrectText.getText());
         CorrectText.setText("");
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+       // TextEditor.text = InputText.getText();
+       // TextEditor.readWords();
         while(invoker.stack.Peek()!=null)invoker.stack.Pop();
         fix.setDisable(true);
 
