@@ -83,7 +83,7 @@ public class FXMLDocumentController implements Initializable {
     private Button undo;
 
     FileChooser fileChooser = new FileChooser();
-    private CommandStack commandStack;
+    private CommandInvoker invoker;
     public int selectedIndex;
 
     /*
@@ -93,6 +93,7 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void handleSpellCheck(ActionEvent event) {
+        
         TextEditor.text = InputText.getText();
         TextEditor.readWords();
         String correct = TextEditor.spellChecker();
@@ -236,6 +237,7 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        
         TextEditor.InitializeFunctions();
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
@@ -244,7 +246,8 @@ public class FXMLDocumentController implements Initializable {
         TextEditor.foundWordIndexes = new ArrayList<Integer>();
         TextEditor.words = new ArrayList<String>();
         TextEditor.wordIndexes = new ArrayList<Integer>();
-        commandStack = new CommandStack(10);
+        
+        invoker=new CommandInvoker(10);
     }
 
     /*
@@ -258,6 +261,7 @@ public class FXMLDocumentController implements Initializable {
         CorrectText.setText("");
         TextEditor.text = InputText.getText();
         TextEditor.readWords();
+        while(invoker.stack.Peek()!=null)invoker.stack.Pop();
         fix.setDisable(true);
 
     }
@@ -283,20 +287,21 @@ public class FXMLDocumentController implements Initializable {
             if (event.getCode() == KeyCode.BACK_SPACE) {//Backspace tuşuna basıldıysa.
 
                 if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
-                    commandStack.Push(new Command("DELETE", InputText.getSelectedText(), start));
+                   invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getSelectedText(), start));
                 } else {//1 karakterden fazla bir string seçilip silindiyse
-                    commandStack.Push(new Command("DELETE", InputText.getText().substring(end - 1, end), start - 1));
+                   invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getText().substring(end - 1, end), start - 1));
                 }
-
-                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
             } else if (event.getCode() == KeyCode.DELETE) {//DELETE tuşuna basıldıysa
                 if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
-                    commandStack.Push(new Command("DELETE", InputText.getSelectedText(), start));
+                    invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getSelectedText(), start));
                 } else {//1 karakterden fazla bir string seçilip silindiyse
-                    commandStack.Push(new Command("DELETE", InputText.getText().substring(end, end + 1), start - 1));
+                    invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getText().substring(end, end + 1), start - 1));
                 }
-
-                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
+                
             } else if (event.getCode() != ignoreKeys[0]
                     && event.getCode() != ignoreKeys[1]
                     && event.getCode() != ignoreKeys[2]
@@ -316,10 +321,10 @@ public class FXMLDocumentController implements Initializable {
                 özelliği eklenmemiştir. Sadece karakter tuşlarına basılacağı
                 varsayılır.
                  */
-                commandStack.Push(new Command("TYPE", event.getText(), start));
-
-                //System.out.println("İŞLEM TİPİ: " + commandStack.Peek().commandType + " -- İşlem: " + commandStack.Peek().command + " " + commandStack.Peek().index);
-            }
+                invoker.DoCommand(this,new ConcreteCommand("TYPE", event.getText(), start));
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
+              }
         } catch (java.lang.StringIndexOutOfBoundsException e) {
         }
 
@@ -339,26 +344,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleUndo(ActionEvent event) {
         try {
-            /*
-            Geri al tuşuna basıldığında commandStack'ten pop edilen command'in
-            içeriği kontrol edilir ve bu içeriğe göre gerekli işlem yapılır.
             
-            Örneğin "DELETE" işlemine sahip içeriği "abc" olan ve indexi 3 olan
-            bir komut undo edildiğinde. Program o sırada metin kutusunun 3. 
-            indexine "abc" metnini yazacaktır.
-            
-            "TYPE" işlemine sahip indexi 4 olan komut undo edildiğinde. Program
-            4. indexteki harfi silecektir. Bu command tipinde command'in içeriği
-            önemli değildir. Sadece silinecek harfi gösterir ama işlemde kullanılmaz.
-             */
-            Command command = commandStack.Pop();
-            if ("TYPE".equals(command.commandType)) {
-                String txt = InputText.getText();
-                InputText.setText(txt.substring(0, command.index) + txt.substring(command.index + 1));
-            } else if ("DELETE".equals(command.commandType)) {
-                InputText.setText(TextEditor.addString(InputText.getText(), command.index, command.command));
+            invoker.UndoCommand(this);
 
-            }
+            
         } catch (NullPointerException e) {
             System.out.println("nuulpoi");
         }

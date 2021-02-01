@@ -156,7 +156,6 @@ public class TextEditor {
 
     //belirli bir stringde verilen indexe başka bir string insert etme metodu
     public static String addString(String text, int index, String word) {
-        System.out.println(text + " " + index + " " + word);
         if (index != text.length()) {
             return text.substring(0, index) + word + text.substring(index);
         } else {
