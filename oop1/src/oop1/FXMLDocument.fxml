@@ -12,12 +12,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="Pane" fx:id="AnchorPane" maxHeight="490.0" maxWidth="676.0" minHeight="490.0" minWidth="676.0" prefHeight="490.0" prefWidth="676.0" style="-fx-background-color: #7FE9FF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop1.FXMLDocumentController">
+<AnchorPane id="Pane" fx:id="AnchorPane" maxHeight="490.0" maxWidth="676.0" minHeight="490.0" minWidth="676.0" prefHeight="490.0" prefWidth="676.0" style="-fx-background-color: #7FE9FF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oop1.FXMLDocumentController">
    <children>
       <Button id="SpellCheck" fx:id="SpellCheck" layoutX="261.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleSpellCheck" prefHeight="25.0" prefWidth="124.0" text="Spell Check" />
       <Button id="SearchButton" fx:id="Search" layoutX="167.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="25.0" prefWidth="52.0" text="Search" AnchorPane.topAnchor="0.0" />
       <TextField id="searchInput" fx:id="SearchButton" layoutX="52.0" layoutY="2.0" onKeyTyped="#whileTypingSearch" prefHeight="25.0" prefWidth="115.0" promptText="Search a Word" AnchorPane.topAnchor="0.0" />
-      <TextArea id="InputText" fx:id="InputText" layoutX="39.0" layoutY="139.0" prefHeight="171.0" prefWidth="598.0" />
+      <TextArea id="InputText" fx:id="InputText" layoutX="39.0" layoutY="139.0" onKeyPressed="#onKeyPressed" prefHeight="171.0" prefWidth="598.0" />
       <TextArea fx:id="CorrectText" editable="false" layoutX="40.0" layoutY="341.0" prefHeight="69.0" prefWidth="598.0" />
       <Label layoutX="39.0" layoutY="115.0" prefHeight="17.0" prefWidth="88.0" style="-fx-background-color: #081DA5;" text="Your Text Area" textAlignment="CENTER" textFill="WHITE">
          <font>
@@ -60,5 +60,6 @@
             <Button fx:id="changeButton" layoutX="115.0" mnemonicParsing="false" onAction="#handleChangeButton" text="Change" />
          </children>
       </AnchorPane>
+      <Button fx:id="undo" layoutX="127.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleUndo" text="Geri Al" />
    </children>
 </AnchorPane>

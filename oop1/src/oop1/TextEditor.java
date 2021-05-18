@@ -6,6 +6,7 @@
 package oop1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -13,10 +14,15 @@ import java.util.ArrayList;
  */
 public class TextEditor {
 
+    public static ArrayList<SpellErrorFunctions> spellErrorFunctions = new ArrayList<SpellErrorFunctions>();
+
     public static String text;
-    public static String[] words;
-    public static int[] wordIndexes;
-    public static int[] foundWordIndexes;
+    /* words, wordsindexes ve foundwordindexes arrayleri, iterator kullanımı
+    sağlanabilmesi için arrayliste çevrildi.
+     */
+    public static ArrayList<String> words;
+    public static ArrayList<Integer> wordIndexes;
+    public static ArrayList<Integer> foundWordIndexes;
     public static int foundSelectedWord;
 
     /* 
@@ -28,8 +34,8 @@ public class TextEditor {
     tutan wordIndexes array'ini de oluşturur.
      */
     public static void readWords() {
-        ArrayList<String> list = new ArrayList<String>();
-        ArrayList<Integer> indexList = new ArrayList<>();
+        words.clear();
+        wordIndexes.clear();
         int i = 0, j = 0;
         String word = "";
         /*
@@ -56,47 +62,50 @@ public class TextEditor {
                 j++;
             }
             word = text.substring(i, j);
-            indexList.add(i);
-            list.add(word);
+            wordIndexes.add(i);
+            words.add(word);
             i = j + 1;
 
         }
-        words = list.toArray(new String[list.size()]);
-        wordIndexes = convertIntegers(indexList);
     }
 
     /*
     Kelimeler array'indeki kelimeleri Dictionary Class'ındaki 
     arama metodunda tek tek aratır, kelime bulunduysa olduğu gibi geçirir
-    bulunmadıysa kelimenin single transposition'lu hallerini de tek tek aratır.
-    Single transposition yapılmış haller sözlükte bulunursa düzeltilmiş kelime 
+    bulunmadıysa kelimeyi tek tek yazım hatası düzeltme algoritmalarının olduğu
+    ArrayListteki fonksiyonlara sokar.
+    
+    Kelime düzeltilebilmiş ise fonksiyondan farklı bir halde çıkar.
+    Düzeltilememiş ise olduğu gibi çıkar. 
+    
+    Kelimenin fonksiyondan çıkmış hali
     yeni oluşturulacak metine eklenir. Bulunamadıysa sözcük hatalıdır ve olduğu
     gibi hatalı haliyle yeni metine eklenir.
+    
     Metinin son hali return edilir
      */
     public static String spellChecker() {
         int spellingErrorCount = 0;
         int fixCount = 0;
         String newText = text;
-        for (int i = 0; i < words.length; i++) {
-            if (!Dictionary.Search(words[i])) {
+        Iterator<String> wordsIt = words.iterator();
+        int index = 0;
+        while (wordsIt.hasNext()) {
+            String word = wordsIt.next();
+            if (!Dictionary.Search(word)) {
                 spellingErrorCount++;
-                for (int j = 0; j < words[i].length() - 1; j++) {
-                    //Single Transposition kombinasyonlarının uygulaması
-                    String transpose = words[i].charAt(j + 1) + ""
-                            + words[i].charAt(j);
-                    String temp = changeString(words[i], j, transpose, 2);
-
-
-                    /*Herhangi bir single transposition ile oluşan kelime 
-                    sözlükte bulunursa düzeltilmiş hali yeni textte yerine 
-                    eklenir.*/
-                    if (Dictionary.Search(temp)) {
+                Iterator<SpellErrorFunctions> funcIt = spellErrorFunctions.iterator(); //iterator design pattern
+                while (funcIt.hasNext()) {
+                    String temp = funcIt.next().apply(word);
+                    if (temp != null) {
                         fixCount++;
-                        newText = changeString(newText, wordIndexes[i], temp, words[i].length());
+                        newText = changeString(newText, wordIndexes.get(index), temp, word.length());
+                        break;
                     }
                 }
+
             }
+            index++;
         }
         return newText;
     }
@@ -110,34 +119,48 @@ public class TextEditor {
      */
     public static void findWord(String word) {
         int found = 0;
+        foundWordIndexes = new ArrayList<Integer>();
         foundSelectedWord = 0;
-        for (String word1 : words) {
+        Iterator<String> wordsIt = words.iterator();
+        int i = 0;
+        while (wordsIt.hasNext()) {
+            String word1 = wordsIt.next();
             if (word1.equalsIgnoreCase(word)) {
+                foundWordIndexes.add(i);
                 found++;
             }
+            i++;
         }
-        foundWordIndexes = new int[found];
-        found = 0;
+
+        /*found = 0;
         for (int i = 0; i < words.length; i++) {
-            if (words[i].equalsIgnoreCase(word)) {
+            if (word.equalsIgnoreCase(word)) {
                 foundWordIndexes[found] = i; //Kelimenin indeksini kaydetme
                 found++;
             }
-        }
+        }*/
+    }
+
+    //Yazım Hatası Düzeltme algoritmalarının bulunduğu ArrayList'in doldurulması
+    public static void InitializeFunctions() {
+        ErrorFunctionFactory factory = new ErrorFunctionFactory();//Factory Design Pattern
+        spellErrorFunctions.add(factory.createFunction("SingleTransposition"));
+
     }
 
     //verilen stringin içerisindeki bir parçayı başka bir string parçasıyla değiştirme metodu
     public static String changeString(String text, int index, String word, int length) {
+
         return text.substring(0, index) + word + text.substring(index + length);
     }
 
-    //int tipli arraylisti int tipli array'e çeviren metod.
-    public static int[] convertIntegers(ArrayList<Integer> integers) {
-        int[] ret = new int[integers.size()];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = integers.get(i);
+    //belirli bir stringde verilen indexe başka bir string insert etme metodu
+    public static String addString(String text, int index, String word) {
+        if (index != text.length()) {
+            return text.substring(0, index) + word + text.substring(index);
+        } else {
+            return text + word;
+            
         }
-        return ret;
     }
-
 }

@@ -5,6 +5,7 @@
  */
 package oop1;
 
+import com.sun.javafx.scene.layout.region.Margins;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Stack;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,6 +27,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -56,7 +59,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button nextSearch;
 
-    public int selectedIndex;
     @FXML
     private MenuItem fileOpen;
     @FXML
@@ -77,16 +79,23 @@ public class FXMLDocumentController implements Initializable {
     private RadioButton changeAll;
     @FXML
     private Button changeButton;
+    @FXML
+    private Button undo;
+
+    FileChooser fileChooser = new FileChooser();
+    private CommandInvoker invoker;
+    public int selectedIndex;
 
     /*
     SpellCheck butonuna tıklandığında editöre yazılı olan texti spellchecker
     metoduna sokar ve değiştirilen kelime varsa aşağıdaki metin kutusunda
     düzeltilmiş metin yazdırılır
-    */
+     */
     @FXML
     private void handleSpellCheck(ActionEvent event) {
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+        
+       // TextEditor.text = InputText.getText();
+       // TextEditor.readWords();
         String correct = TextEditor.spellChecker();
         if (!correct.equals(TextEditor.text)) {
             CorrectText.setText(correct);
@@ -97,33 +106,33 @@ public class FXMLDocumentController implements Initializable {
             CorrectText.setText("");
             fix.setDisable(true);
         }
-
     }
 
     /*
     Girilen kelimeyi Editördeki metnin içinde aratır ve ilk bulunan sonucu
     işaretler. Bulunan diğer sonuçları seçmek için kullanılacak butonu da
     aktif eder.
-    */
+     */
     @FXML
     private void handleSearchButton(ActionEvent event) {
 
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+      //  TextEditor.text = InputText.getText();
+      //  TextEditor.readWords();
+        System.out.println(TextEditor.text);
         String word = SearchButton.getText();
         TextEditor.findWord(word);
-        int[] indexes = TextEditor.foundWordIndexes;
+        ArrayList<Integer> indexes = TextEditor.foundWordIndexes;
 
-        if (indexes.length > 1) {
+        if (indexes.size() > 1) {
 
             nextSearch.setVisible(true);
 
         }
-        if (indexes.length > 0) {
+        if (indexes.size() > 0) {
 
             nextSearch.setDisable(false);
             ChangePane.setVisible(true);
-            int k = TextEditor.wordIndexes[indexes[0]];
+            int k = TextEditor.wordIndexes.get(indexes.get(0));
             InputText.selectRange(k, k + word.length());
         } else {
             InputText.deselect();
@@ -135,12 +144,12 @@ public class FXMLDocumentController implements Initializable {
     /*
     Bulunan kelimelerden bir sonrakinin işaretlenmesine yarayan buton.
     Son kelimeden sonra başa döner.
-    */
+     */
     @FXML
     private void handleNextSearch(ActionEvent event) {
-        TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.length;
+        TextEditor.foundSelectedWord = (TextEditor.foundSelectedWord + 1) % TextEditor.foundWordIndexes.size();
 
-        int k = TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]];
+        int k = TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(TextEditor.foundSelectedWord));
         InputText.selectRange(k, k + SearchButton.getText().length());
 
     }
@@ -151,24 +160,24 @@ public class FXMLDocumentController implements Initializable {
     değiştirileceğini seçer.
     Bu seçime göre program bulunan keliemelerin indexlerini kullanarak
     seçili kelimeleri istenen string ile değiştirir.
-    */
+     */
     @FXML
     private void handleChangeButton(ActionEvent event) {
         int lenght = SearchButton.getText().length();
         if (changeSelected.isSelected()) {
 
-            String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[TextEditor.foundSelectedWord]], changeWordInput.getText(), lenght);
+            String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(TextEditor.foundSelectedWord)), changeWordInput.getText(), lenght);
             InputText.setText(change);
-            TextEditor.text = InputText.getText();
+                TextEditor.text = InputText.getText();
             TextEditor.readWords();
         } else {
 
-            for (int i = 0; i < TextEditor.foundWordIndexes.length; i++) {
+            for (int i = 0; i < TextEditor.foundWordIndexes.size(); i++) {
+               
+                String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes.get(TextEditor.foundWordIndexes.get(i)), changeWordInput.getText(), lenght);
+                InputText.setText(change);
                 TextEditor.text = InputText.getText();
                 TextEditor.readWords();
-                String change = TextEditor.changeString(InputText.getText(), TextEditor.wordIndexes[TextEditor.foundWordIndexes[i]], changeWordInput.getText(), lenght);
-                InputText.setText(change);
-
             }
 
         }
@@ -226,28 +235,34 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
-    FileChooser fileChooser = new FileChooser();
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        
+        TextEditor.InitializeFunctions();
         Dictionary.readDict();
         fileChooser.setInitialDirectory(new File("C:\\"));
         selectedIndex = 0;
         nextSearch.setDisable(true);
+        TextEditor.foundWordIndexes = new ArrayList<Integer>();
+        TextEditor.words = new ArrayList<String>();
+        TextEditor.wordIndexes = new ArrayList<Integer>();
+        
+        invoker=new CommandInvoker(10);
     }
 
     /*
     Aşağıdaki metin kutusundaki düzeltilmiş metni yukarıdaki metin kutusuna 
     taşıyan metod.
-    */
+     */
     @FXML
     private void fixInputText(ActionEvent event) {
 
         InputText.setText(CorrectText.getText());
         CorrectText.setText("");
-        TextEditor.text = InputText.getText();
-        TextEditor.readWords();
+       // TextEditor.text = InputText.getText();
+       // TextEditor.readWords();
+        while(invoker.stack.Peek()!=null)invoker.stack.Pop();
         fix.setDisable(true);
 
     }
@@ -255,10 +270,65 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void whileTypingSearch(KeyEvent event) {
         TextEditor.foundSelectedWord = 0;
-        TextEditor.foundWordIndexes = new int[0];
+        TextEditor.foundWordIndexes.clear();
         nextSearch.setDisable(true);
 
         InputText.deselect();
+    }
+
+    KeyCode[] ignoreKeys = {KeyCode.UP, KeyCode.DOWN, KeyCode.RIGHT, KeyCode.LEFT, KeyCode.SHIFT, KeyCode.CONTROL, KeyCode.ALT, KeyCode.TAB};
+
+    //Text alanına her key basışta yapılan işleme göre command stack'e
+    //command objesi pushlama.
+    @FXML
+    private void onKeyPressed(KeyEvent event) {
+        try {
+            int start = InputText.getSelection().getStart();
+            int end = InputText.getSelection().getEnd();
+            if (event.getCode() == KeyCode.BACK_SPACE) {//Backspace tuşuna basıldıysa.
+
+                if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
+                   invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getSelectedText(), start));
+                } else {//1 karakterden fazla bir string seçilip silindiyse
+                   invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getText().substring(end - 1, end), start - 1));
+                }
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
+            } else if (event.getCode() == KeyCode.DELETE) {//DELETE tuşuna basıldıysa
+                if (start != end) {//1 Karakterlik silme işlemi uygulandıysa
+                    invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getSelectedText(), start));
+                } else {//1 karakterden fazla bir string seçilip silindiyse
+                    invoker.DoCommand(this,new ConcreteCommand("DELETE", InputText.getText().substring(end, end + 1), start - 1));
+                }
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
+                
+            } else if (event.getCode() != ignoreKeys[0]
+                    && event.getCode() != ignoreKeys[1]
+                    && event.getCode() != ignoreKeys[2]
+                    && event.getCode() != ignoreKeys[3]
+                    && event.getCode() != ignoreKeys[4]
+                    && event.getCode() != ignoreKeys[5]
+                    && event.getCode() != ignoreKeys[6]
+                    && event.getCode() != ignoreKeys[7]) {
+                /*
+                Backspace , DELETE , TAB , CTRL , ALT ,SHIFT veya
+                ok tuşlarından biri basılmadıysa. Basılan tuşun bir karakter
+                olduğunu varsayarak Bu karakterin bilgilerini içeren bir 
+                Command objesi oluşturulur ve Stack'e eklenir.
+                
+                Burada belirtilen tuşlardan farklı olup bir karakter tuşu olmayan
+                bir tuşa basıldığında program hata verebilir. Bunların yoksayılması
+                özelliği eklenmemiştir. Sadece karakter tuşlarına basılacağı
+                varsayılır.
+                 */
+                invoker.DoCommand(this,new ConcreteCommand("TYPE", event.getText(), start));
+                ConcreteCommand com = (ConcreteCommand)invoker.stack.Peek();
+               System.out.println("İŞLEM TİPİ: " + com.commandType + " -- İşlem: " + com.command + " " + com.index);
+              }
+        } catch (java.lang.StringIndexOutOfBoundsException e) {
+        }
+
     }
 
     @FXML
@@ -270,6 +340,18 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleAllCheck(ActionEvent event) {
         changeSelected.setSelected(false);
+    }
+
+    @FXML
+    private void handleUndo(ActionEvent event) {
+        try {
+            
+            invoker.UndoCommand(this);
+
+            
+        } catch (NullPointerException e) {
+            System.out.println("nuulpoi");
+        }
     }
 
 }
